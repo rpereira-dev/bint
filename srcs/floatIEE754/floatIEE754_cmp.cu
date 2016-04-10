@@ -11,13 +11,13 @@ int float754_cmp(t_float754 *a, t_float754 *b) {
 	//if a is NULL, b isnt NULL (because a != b)
 	if (a == NULL) {
 		//if b is negative, return -1, +1 if positive
-		return (float754_sign(b));
+		return (b->sign);
 	}
 
 	//if b is NULL, a isnt NULL (because a != b)
 	if (b == NULL) {
 		//if a is negative, return -1, +1 if positive
-		return (float754_sign(a));
+		return (a->sign);
 	}
 
 	

@@ -1,6 +1,7 @@
-#ifndef FLOAT_EXTENDED_H
-# define FLOAT_EXTENDED_H
+#ifndef FLOAT_IEE754_H
+# define FLOAT_IEE754_H
 
+# include "binary_tools.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -10,16 +11,14 @@
  *	follows the IEEE754 norm. (but with dynamic size set on allocation)
  */
 typedef struct	s_float754 {
-	unsigned int exposantbit;
-	unsigned int mantissabit;
-	unsigned int exposantbyte;
-	unsigned int mantissabyte;
-	unsigned int sizebit;
-	unsigned int sizebyte;
+	unsigned int exposantbyte; //number of byte for the exposant
+	unsigned int mantissabyte; //number of byte for the mantissa
+	unsigned int sizebyte; //total number of byte
+	char sign; //the sign
 }		t_float754;
 
-/** create a new t_float754, sizes are in bits */
-t_float754 *float754_new(unsigned int exposant_size, unsigned int mantissa_size);
+/** create a new t_float754, sizes are in bytes. exposantbyte >= 1,  mantissabyte >= 4*/
+t_float754 *float754_new(unsigned int exposantbyte, unsigned int mantissabyte);
 t_float754 *float754_new32(float f);
 
 /** clone the given float */
@@ -28,19 +27,7 @@ t_float754 *float754_clone(t_float754 *a);
 
 /** dump the given float to stdout */
 void float754_dump(t_float754 *f);
-
-/**
-*	set the float value from the given binary string.
-*	if f is NULL, NULL is returned
-*	if sizes doesnt match or an error occured, NULL is returned.
-*	if str is NULL, f is set to 0
-*
-*	support two format for now:
-*			"01011011 01011011 01011011 01011011"
-*		or
-*			"01011011010110110101101101011011"
-*/
-t_float754 *float754_set(t_float754 *f, unsigned char const *str);
+void bindump(void *data, int len);
 
 /**
 *	set version for float32 which is faster than converting the float to a string.
@@ -59,9 +46,6 @@ t_float754 *float754_set32(t_float754 *F, float f);
 *		return 0
 */
 int float754_cmp(t_float754 *a, t_float754 *b);
-
-/** return the sign of the given float: -1 on negative, 1 on positive, 0 on 0 */
-int float754_sign(t_float754 *f);
 
 /** negate the number: f <- -f */
 t_float754 *float754_negate(t_float754 *f);

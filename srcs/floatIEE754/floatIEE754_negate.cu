@@ -2,9 +2,7 @@
 
 t_float754 *float754_negate(t_float754 *f) {
 
-	if (f != NULL) {
-		((char*)(f + 1))[0] ^= (1 << 7);
-	}
+	f->sign = -f->sign;
 
 	return (f);
 }

@@ -9,12 +9,13 @@ t_float754 *float754_assign(t_float754 *dst, t_float754 *a) {
 
 	//if we want to assign 0
 	if (a == NULL) {
+		dst->sign = 0;
 		memset(dst + 1, 0, dst->sizebyte);
 		return (dst);
 	}
 
-	//if sizes are different, return null
-	if (memcmp(dst, a, sizeof(t_float754)) != 0) {
+	//wrong sizes
+	if (dst->exposantbyte != a->exposantbyte || dst->mantissabyte != a->exposantbyte) {
 		return (NULL);
 	}
 
