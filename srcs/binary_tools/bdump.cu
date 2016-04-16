@@ -1,6 +1,6 @@
 #include "binary_tools.h"
 
-void bindump(void *data, int len) {
+void bdump(void *data, int len) {
 
 	if (data == NULL) {
 		printf("(null)\n");

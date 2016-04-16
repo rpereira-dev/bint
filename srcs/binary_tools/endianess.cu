@@ -1,5 +1,5 @@
 
-int endianess() {
+int endianness() {
 	union {
 		int i;
 		char c[4];
@@ -13,20 +13,23 @@ static void swap_char(char *a, char *b) {
 	*b = c;
 }
 
-float ensure_float_endianess(float f) {
+float btools_swap_float_endian(float f) {
 	char *bytes = (char*)&f;
-	if (endianess() == 0) {
-		swap_char(bytes, bytes + 3);	
-		swap_char(bytes + 1, bytes + 2);	
-	}
+	swap_char(bytes, bytes + 3);	
+	swap_char(bytes + 1, bytes + 2);	
 	return (f);
 }
 
-int ensure_int_endianess(int i) {
+int btools_swap_int_endian(int i) {
 	char *bytes = (char*)&i;
-	if (endianess() == 0) {
-		swap_char(bytes, bytes + 3);	
-		swap_char(bytes + 1, bytes + 2);	
-	}
+	swap_char(bytes, bytes + 3);	
+	swap_char(bytes + 1, bytes + 2);
+	return (i);
+}
+
+unsigned int btools_swap_unsigned_int_endian(unsigned int i) {
+	char *bytes = (char*)&i;
+	swap_char(bytes, bytes + 3);	
+	swap_char(bytes + 1, bytes + 2);
 	return (i);
 }

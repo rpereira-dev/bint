@@ -3,6 +3,6 @@
 
 # include "binary_tools.h"
 # include "float754.h"
-# include "bigint.h"
+# include "bint.h"
 
 # endif

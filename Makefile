@@ -1,6 +1,6 @@
 NAME = ./bin/fractal 
 
-SRCS = ./srcs/main.cu $(wildcard ./srcs/floatIEE754/*.cu) $(wildcard ./srcs/bigint/*.cu) $(wildcard ./srcs/binary_tools/*.cu)
+SRCS = ./srcs/main.cu $(wildcard ./srcs/floatIEE754/*.cu) $(wildcard ./srcs/bint/*.cu) $(wildcard ./srcs/binary_tools/*.cu)
 CU_OBJ = $(SRCS:.cu=.o)
 LIBDIR = ./lib
 
