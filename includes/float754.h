@@ -1,7 +1,7 @@
 #ifndef FLOAT_IEE754_H
 # define FLOAT_IEE754_H
 
-# include "binary_tools.h"
+# include "btools.h"
 # include "bint.h"
 # include <stdio.h>
 # include <stdlib.h>

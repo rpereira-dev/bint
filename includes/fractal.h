@@ -1,7 +1,7 @@
 #ifndef FRACTAL_H
 # define FRACTAL_H
 
-# include "binary_tools.h"
+# include "btools.h"
 # include "float754.h"
 # include "bint.h"
 

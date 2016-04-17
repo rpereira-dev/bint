@@ -1,21 +1,14 @@
 #include "bint.h"
 
-static unsigned int clamp_size(unsigned int size) {
-	if (size == 0) {
-		size = sizeof(int);
-	} else if (size % sizeof(int) != 0) {
-		size += (sizeof(int) - size % sizeof(int));
-	}
-	return (size);
-}
-
 t_bint *bint_new(unsigned int size) {
 
 	//so the size is > 0 and multiple of sizeof(int)
-	size = clamp_size(size);
+	if (size == 0) {
+		size = 1;
+	}
 
 	//allocate memory space
-	t_bint *i = (t_bint*)malloc(sizeof(t_bint) + size);
+	t_bint *i = (t_bint*)malloc(sizeof(t_bint) + size * sizeof(int));
 	if (i == NULL) {
 		return (NULL);
 	}
@@ -23,7 +16,8 @@ t_bint *bint_new(unsigned int size) {
 	//assign size
 	i->size = size;
 	i->sign = 0;
-	i->bits = (char*)(i + 1);
+	i->words = (unsigned int*)(i + 1);
+	i->last_word_set = i->words + size;
 
 	//return it
 	return (i);
@@ -61,7 +55,7 @@ t_bint *bint_new32(int value) {
 
 /** 64bits version new and set */
 t_bint *bint_new64(long int value) {
-	t_bint *i = bint_new(sizeof(long int));
+	t_bint *i = bint_new(sizeof(long long int));
 	if (i == NULL) {
 		return (NULL);
 	}

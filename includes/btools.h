@@ -6,9 +6,9 @@
 #define ENDIANESS ('ABCD' == 0x41424344)
 #define BIG_ENDIAN 0
 #define LITTLE_ENDIAN 1
-#define BITSET(X, n) (X & (1 << n))
-#define SETBIT(X, n) (X = X | (1 << n))
-#define UNSETBIT(X, n) (X = X | ~(1 << n))
+#define BITSET(X, n) ((X) & (1 << n) ? 1 : 0)
+#define SETBIT(X, n) ((X) |= (1 << n))
+#define UNSETBIT(X, n) ((X) &= ~(1 << n))
 
 typedef unsigned char t_byte;
 
@@ -19,6 +19,6 @@ void bdump(void *data, int len);
 int endianness(void);
 
 /** swap endianness (assume 4 bytes sizes) */
-void btools_swap_endian(void *);
+void btools_swap_32(void *addr);
 
 #endif
