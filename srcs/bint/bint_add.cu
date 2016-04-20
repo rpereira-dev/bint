@@ -76,38 +76,9 @@ static void bint_add_bits_by_bits_dst(t_bint *dst, t_bint *a, t_bint *b) {
 }
 */
 
-/** add two integer a, b, with the same sizes, they are assumed non-both NULL */
-static void _bint_add_dst(t_bint *dst, t_bint *a, t_bint *b) {
+/** add the two numbers, assuming they have the same sign and a >= b */
+static void _bint_add_dst_raw(t_bint *dst, t_bint *a, t_bint *b) {
 
-	//if one is NULL
-	if (a == NULL || a->sign == 0) {
-		bint_copy(dst, b);
-		return ;
-	}
-	if (b == NULL || b->sign == 0) {
-		bint_copy(dst, a);
-		return ;
-	}
-
-	//always have a > b
-	if (a->last_word_set - a->words < b->last_word_set - b->words) {
-		t_bint *tmp = a;
-		a = b;
-		b = tmp;
-	}
-
-	//if both negative or both positive
-	if (a->sign == -1 && b->sign == 1) {
-		//TODO SUB b - abs(a)
-		return ;
-	} else if (a->sign == 1 && b->sign == -1) {
-		//TODO sub fast a - abs(b)
-		return ;
-	}
-
-	//now, a > b, a->sign == b->sign
-
-	dst->sign = a->sign;
 	unsigned int *awords = a->words + a->size;
 	unsigned int *bwords = b->words + b->size;
 	unsigned int *dstwords = dst->words + dst->size;
@@ -130,6 +101,40 @@ static void _bint_add_dst(t_bint *dst, t_bint *a, t_bint *b) {
 	}
 
 	dst->last_word_set = dstwords + 1;
+}
+
+/** add two integer a, b, with the same sizes, they are assumed non-both NULL */
+static void _bint_add_dst(t_bint *dst, t_bint *a, t_bint *b) {
+
+	//if one is NULL, return a copy of the other
+	if (a == NULL || a->sign == 0) {
+		bint_copy(dst, b);
+		return ;
+	}
+	if (b == NULL || b->sign == 0) {
+		bint_copy(dst, a);
+		return ;
+	}
+
+	//if a < b
+	if (bint_cmp(a, b) < 0) {
+		//swap them
+		t_bint *tmp = a;
+		a = b;
+		b = tmp;
+	}
+
+	//if both negative or both positive
+	if (a->sign == -1 && b->sign == 1) {
+		//TODO SUB b - abs(a)
+		return ;
+	} else if (a->sign == 1 && b->sign == -1) {
+		//TODO sub fast a - abs(b)
+		return ;
+	} else {
+		dst->sign = a->sign;
+		_bint_add_dst_raw(dst, a, b);
+	}
 }
 
 t_bint *bint_add(t_bint *a, t_bint *b) {

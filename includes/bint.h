@@ -32,6 +32,7 @@ t_bint *bint_resize(t_bint *i, unsigned int size);
 
 /** debug funtions */
 void bint_dump(t_bint *i);
+int bint_cmp(t_bint *a, t_bint *b);
 
 /** negate */
 t_bint *bint_negate(t_bint *i);

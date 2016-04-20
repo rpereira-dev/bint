@@ -21,10 +21,10 @@ void testBint() {
 	printf("%u\n", clock() - t);
 	printf("%10d: ", avalue + bvalue), bint_dump(r), printf("\n");
 
-
 	free(a);
 	free(b);
 	free(r);
+
 }
 
 int main(void) {
