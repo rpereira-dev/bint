@@ -61,8 +61,6 @@ int bint_cmp(t_bint *a, t_bint *b) {
 		++bword;
 	} while (aword < aend);
 
-	puts("OK MEC");
-
 	//else a strictly equals b
 	return (0);
 }

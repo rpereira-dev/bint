@@ -24,7 +24,6 @@ void testBint() {
 	free(a);
 	free(b);
 	free(r);
-
 }
 
 int main(void) {

@@ -103,40 +103,6 @@ static void _bint_add_dst_raw(t_bint *dst, t_bint *a, t_bint *b) {
 	dst->last_word_set = dstwords + 1;
 }
 
-/** add two integer a, b, with the same sizes, they are assumed non-both NULL */
-static void _bint_add_dst(t_bint *dst, t_bint *a, t_bint *b) {
-
-	//if one is NULL, return a copy of the other
-	if (a == NULL || a->sign == 0) {
-		bint_copy(dst, b);
-		return ;
-	}
-	if (b == NULL || b->sign == 0) {
-		bint_copy(dst, a);
-		return ;
-	}
-
-	//if a < b
-	if (bint_cmp(a, b) < 0) {
-		//swap them
-		t_bint *tmp = a;
-		a = b;
-		b = tmp;
-	}
-
-	//if both negative or both positive
-	if (a->sign == -1 && b->sign == 1) {
-		//TODO SUB b - abs(a)
-		return ;
-	} else if (a->sign == 1 && b->sign == -1) {
-		//TODO sub fast a - abs(b)
-		return ;
-	} else {
-		dst->sign = a->sign;
-		_bint_add_dst_raw(dst, a, b);
-	}
-}
-
 t_bint *bint_add(t_bint *a, t_bint *b) {
 	return (bint_add_dst(NULL, a, b));
 }
@@ -152,26 +118,57 @@ t_bint *bint_add_dst(t_bint **dst, t_bint *a, t_bint *b) {
 	//the size to store the result
 	int size = a == NULL ? b->size : b == NULL ? a->size : a->size > b->size ? a->size : b->size;
 
-	//the return value
-	t_bint *r;
+	//ensure that 'dst' bint has the given size
+	t_bint * r = bint_ensure_size(dst, size);
 
-	//if dst is NULL
-	if (dst == NULL) {
-		//create a new integer
-		r = bint_new(size);
-	} else if ((*dst) == NULL || (*dst)->size < size) {
-		//free it
-		free(*dst);
-		//allocate the return value
-		r = bint_new(size);
-		//set the return value to dst
-		*dst = r;
-	} else {
-		r = *dst;
+	//if allocation failed
+	if (r == NULL) {
+		return (NULL);
 	}
 
-	_bint_add_dst(r, a, b);
+	//do the addition, r has now a correct size to store the result
 
+	//if one is NULL, return a copy of the other
+	if (a == NULL || a->sign == 0) {
+		bint_copy(r, b);
+	} else if (b == NULL || b->sign == 0) {
+		bint_copy(r, a);
+	} else {
+
+		//compare the two integers
+		int cmp = bint_cmp(a, b);
+		
+		//if a == b, then return 2 * a
+		if (cmp == 0) {
+			//dst = a << 1 = 2 * a
+			bint_shift_left_dst(dst, a, 1);
+		} else {
+
+			//else, if a < b
+			if (cmp < 0) {
+				//swap them, so we always then have a > b
+				t_bint *tmp = a;
+				a = b;
+				b = tmp;
+			}
+			
+			//' a + (-b) ' becomes ' a - b '
+			//notice that the case '(-a) + b ' becoming ' b - a' is impossible here: a > b
+			if (a->sign == 1 && b->sign == -1) {
+				//TODO : a - abs(b)
+			} else {
+				//a and b have the same size, and a > b
+				//set the sign
+				r->sign = a->sign;
+
+				//finally do the addition
+				_bint_add_dst_raw(r, a, b);
+			}
+
+		}
+	}
+
+	//return the result
 	return (r);
 }
 
