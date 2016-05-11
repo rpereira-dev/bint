@@ -44,23 +44,23 @@ static void bint_shift_right_once(t_bint *dst) {
 	}
 }
 
-static t_bint *bint_shift_dst_raw(t_bint **dst, t_bint *i, unsigned int n, void (*shift_function)(t_bint *)) {
+static t_bint *bint_shift_dst_raw(t_bint **dst, t_bint *integer, unsigned int n, void (*shift_function)(t_bint *)) {
 
 	//the pointer to store the result
-	t_bint *r = bint_ensure_size(dst, i->size);
+	t_bint *r = bint_ensure_size(dst, integer->size);
 
 	//if allocation failed...
 	if (r == NULL) {
-		return ;
+		return (NULL);
 	}
 
 	//copy the integer to shift
-	bint_copy(r, i);
+	bint_copy(r, integer);
 
 	//shift it n times
 	unsigned int i;
 	for (i = 0 ; i < n ; i++) {
-		shift_function(dst);
+		shift_function(r);
 	}
 
 	return (r);
@@ -102,8 +102,8 @@ t_bint *bint_shift_right(t_bint *i, int n) {
 t_bint *bint_shift_right_dst(t_bint **dst, t_bint *i, int n) {
 
 	//if i is 0, return 0
-	if (i == NULL || i->sign == 0) {
-		return (NULL);
+	if (bint_is_zero(i)) {
+		return (BINT_ZERO);
 	}
 
 	//the shift function to use (left or right)

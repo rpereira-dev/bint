@@ -110,9 +110,9 @@ t_bint *bint_add(t_bint *a, t_bint *b) {
 t_bint *bint_add_dst(t_bint **dst, t_bint *a, t_bint *b) {
 
 	//if a and b are 0
-	if ((a == NULL || a->sign == 0) && (b == NULL || b->sign == 0)) {
+	if (bint_is_zero(a) && bint_is_zero(b)) {
 		//return 0
-		return (NULL);
+		return (BINT_ZERO);
 	}
 
 	//the size to store the result

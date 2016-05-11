@@ -1,8 +1,8 @@
 #include "bint.h"
 
 int bint_cmp(t_bint *a, t_bint *b) {
-	//if a and b are NULL
-	if (a == NULL && b == NULL) {
+	//if a and b are the same pointer (can be both NULL thought)
+	if (a == b) {
 		//0 == 0
 		return (1);
 	}

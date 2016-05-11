@@ -30,7 +30,7 @@ void bint_set32(t_bint *dst, int i) {
 }
 
 void bint_set16(t_bint *dst, short i) {
-
+	
 }
 
 void bint_set8(t_bint *dst, char i) {

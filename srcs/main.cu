@@ -17,13 +17,13 @@ void testBint() {
 	printf("%10d: ", bvalue), bint_dump(b), printf("\n");
 
 	clock_t t = clock();
-	r = bint_add_dst(&r, a, b);
+	bint_add_dst(&r, a, b);
 	printf("%u\n", clock() - t);
 	printf("%10d: ", avalue + bvalue), bint_dump(r), printf("\n");
 
-	free(a);
-	free(b);
-	free(r);
+	bint_delete(&a);
+	bint_delete(&b);
+	bint_delete(&r);
 }
 
 int main(void) {

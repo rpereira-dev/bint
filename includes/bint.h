@@ -4,6 +4,9 @@
 # include "btools.h"
 # include <stdlib.h>
 
+//we define zero != NULL so we can know whether a function returns a memory error (NULL) or actually zero (BINT_ZERO)
+# define BINT_ZERO ((t_bint*)1)
+
 /** a data structure which represent integer with a custom size */
 /** the 'bits' address contains a raw array of 'int' in the device endianness */
 typedef struct	s_bint {
@@ -35,6 +38,7 @@ t_bint * bint_resize(t_bint * i, unsigned int size);
 void bint_dump(t_bint * i);
 
 /** comparison */
+int bint_is_zero(t_bint *i);
 int bint_cmp(t_bint * a, t_bint * b);
 
 /** copy (unsafe) */
