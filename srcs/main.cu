@@ -1,35 +1,27 @@
 #include "fractal.h"
 #include <time.h>
 
-void testBint() {
+void testBint(int argc, char **argv) {
 
-	int avalue = 42;
-	int bvalue = 10;
+	t_bint *a = bint_new(1024);
+	int value = atoi(argv[1]);
+	bint_set32(a, value);
 
-	t_bint *a = bint_new(10000000);
-	t_bint *b = bint_new(10000000);
-	t_bint *r = bint_new(10000000);
+	char *bcd = bint_to_bcd(a);
+	printf("final bcd is: "), bdump(bcd, strchr(bcd, 0xFF) - bcd), printf("\n");
 
-	bint_set32(a, avalue);
-	bint_set32(b, bvalue);
-
-	printf("%10d: ", avalue), bint_dump(a), printf("\n");
-	printf("%10d: ", bvalue), bint_dump(b), printf("\n");
-
-	clock_t t = clock();
-	bint_add_dst(&r, a, b);
-	printf("%u\n", clock() - t);
-	printf("%10d: ", avalue + bvalue), bint_dump(r), printf("\n");
+	char *str = bcd_to_str(bcd);
+	printf("BCD CONVERTED IS: %s , expected: %d\n", str, value);
 
 	bint_delete(&a);
-	bint_delete(&b);
-	bint_delete(&r);
+	free(bcd);
+	free(str);
 }
 
-int main(void) {
+int main(int argc, char **argv) {
 	
 	//testFloatIEE754();
-	testBint();
+	testBint(argc, argv);
 
 	return (EXIT_SUCCESS);
 }

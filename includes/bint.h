@@ -34,8 +34,10 @@ t_bint * bint_new8(char value);
 t_bint * bint_clone(t_bint * i);
 t_bint * bint_resize(t_bint * i, unsigned int size);
 
-/** debug funtions */
+/** output funtions */
 void bint_dump(t_bint * i);
+char *bint_to_bcd(t_bint * i);
+char *bcd_to_str(char *bcd);
 
 /** comparison */
 int bint_is_zero(t_bint *i);
