@@ -16,6 +16,17 @@ typedef struct	s_bint {
 	char sign; //the sign
 }				t_bint;
 
+/**
+**	a data structure which represent a bcd number representation.
+**	attribute:
+**		- length : number of byte for this bcd
+**		- raw_bytes : the raw bcd bytes
+*/
+typedef struct	s_bcd {
+	size_t length;
+	unsigned char *raw_bytes;
+}				t_bcd;
+
 /** create a new big int on the given size */
 t_bint * bint_new(unsigned int size);
 /** delete the given integer */
@@ -36,8 +47,10 @@ t_bint * bint_resize(t_bint * i, unsigned int size);
 
 /** output funtions */
 void bint_dump(t_bint * i);
-char *bint_to_bcd(t_bint * i);
-char *bcd_to_str(char *bcd);
+t_bcd * bint_to_bcd(t_bint * i);
+char * bcd_to_str(t_bcd * bcd);
+void bcd_dump(t_bcd * bcd);
+void bcd_delete(t_bcd **bcd);
 
 /** comparison */
 int bint_is_zero(t_bint *i);
