@@ -11,7 +11,7 @@ void bdump(void *data, int len) {
 		char buffer[9];
 		buffer[8] = 0;
 
-		while (true) {
+		while (1) {
 
 			buffer[0] = ((*addr) & (1 << 7)) ? '1' : '0';
 			buffer[1] = ((*addr) & (1 << 6)) ? '1' : '0';

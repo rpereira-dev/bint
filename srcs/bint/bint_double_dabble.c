@@ -90,7 +90,7 @@ t_bcd *bint_to_bcd(t_bint *i) {
 	//printf("bcd after copy: ", 0), bdump(bcd_str, nbytes_bcd), printf("\n");
 
 	//swap the endian so we always work in little endian
-	if (endianness() == BIG_ENDIAN) {
+	if (endianness() == BTOOLS_BIG_ENDIAN) {
 		bint_bcd_swap_endian(bcd_str + nbytes_bcd - byteset, i->wordset);
 	}
 
@@ -125,12 +125,12 @@ t_bcd *bint_to_bcd(t_bint *i) {
 	//printf("bcd initial   : ", bits), bdump(bcd_str, nbytes_bcd), printf("\n");
 
 	//for each bits
-	while (true) {
+	while (1) {
 
 		//total number of byte hold by the bcd pointer (+ 1 so we handle overflow on shifting)
-		size_t bytes_to_shift = byteset + bytes_in_column + 1;
+		size_t bytes_to_shift = byteset - bits / 8 + bytes_in_column + 1;
 		//where the shift should end
-		unsigned char *endshift = bcd_str + nbytes_bcd - bytes_to_shift;
+		unsigned char *endshift = bcd_str + nbytes_bcd - byteset - bytes_in_column - 1;
 		//do the shift
 		bcd_shift_left_once(endshift, bytes_to_shift);
 
@@ -149,7 +149,6 @@ t_bcd *bint_to_bcd(t_bint *i) {
 		if (bits >= nbits) {
 			break ;
 		}
-
 
 		//for each bcd byte column set
 		int i;
@@ -273,5 +272,8 @@ char *bcd_to_str(t_bcd *bcd) {
 }
 
 char * bint_to_str(t_bint * i) {
-	return (bcd_to_str(bint_to_bcd(i)));
+	t_bcd * bcd = bint_to_bcd(i);
+	char *str = bcd_to_str(bcd);
+	bcd_delete(&bcd);
+	return (str);
 }

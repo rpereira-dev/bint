@@ -3,12 +3,9 @@
 
 # include <stdio.h>
 
-#define ENDIANESS ('ABCD' == 0x41424344)
-#define BIG_ENDIAN 0
-#define LITTLE_ENDIAN 1
-#define BITSET(X, n) ((X) & (1 << n) ? 1 : 0)
-#define SETBIT(X, n) ((X) |= (1 << n))
-#define UNSETBIT(X, n) ((X) &= ~(1 << n))
+# define ENDIANESS ('ABCD' == 0x41424344)
+# define BTOOLS_BIG_ENDIAN 0
+# define BTOOLS_LITTLE_ENDIAN 1
 
 typedef unsigned char t_byte;
 

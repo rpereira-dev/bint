@@ -2,7 +2,10 @@
 # define BINT_H
 
 # include "btools.h"
+# include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
+# include <sys/time.h>
 
 //we define zero != NULL so we can know whether a function returns a memory error (NULL) or actually zero (BINT_ZERO)
 # define BINT_ZERO ((t_bint*)1)
@@ -50,6 +53,7 @@ char * bcd_to_str(t_bcd * bcd);
 char * bint_to_str(t_bint * i);
 void bcd_dump(t_bcd * bcd);
 void bcd_delete(t_bcd **bcd);
+size_t bint_digit(t_bint *n);
 
 /** comparison */
 int bint_is_zero(t_bint *i);
@@ -87,5 +91,6 @@ t_bint * bint_shift_right_dst(t_bint ** dst, t_bint * i, int n);
 
 /** setters */
 t_bint *bint_set(t_bint **dst, int i);
+t_bint * bint_set_pow2(t_bint **dst, size_t i);
 
 #endif

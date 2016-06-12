@@ -1,6 +1,7 @@
 #include "fractal.h"
 #include <time.h>
 
+/*
 void testDoubleDabble(int argc, char **argv) {
 
 	char buffer[64];
@@ -30,7 +31,8 @@ void testDoubleDabble(int argc, char **argv) {
 		free(str);
 	}
 }
-
+*/
+/*
 void testAddition(int argc, char **argv) {
 	int avalue = atoi(argv[1]);
 	int bvalue = atoi(argv[2]);
@@ -46,8 +48,9 @@ void testAddition(int argc, char **argv) {
 	bint_delete(&a);
 	bint_delete(&b);
 	bint_delete(&r);
-}
+}*/
 
+/**
 void testShift(int argc, char **argv) {
 	
 	int value = atoi(argv[1]);
@@ -61,18 +64,76 @@ void testShift(int argc, char **argv) {
 	char * str = bint_to_str(r);
 	printf("(%d << %d) = %s\n", value, n, str);
 
-	while(1);
 	free(str);
 	bint_delete(&a);
 	bint_delete(&r);
 }
+*/
 
+/**
+void testPow2(int argc, char **argv) {
+
+
+	t_bint *a = bint_set_pow2(NULL, atoi(argv[1]));
+	t_bcd * bcd;
+	char * str;
+
+	{
+		struct timeval stop, start;
+		gettimeofday(&start, NULL);
+
+		bcd = bint_to_bcd(a);
+
+		gettimeofday(&stop, NULL);
+		size_t lasted = stop.tv_usec - start.tv_usec;
+		//printf("bint -> bcd: %lu\n", lasted);
+	}
+
+
+	{
+		struct timeval stop, start;
+		gettimeofday(&start, NULL);
+
+		str = bcd_to_str(bcd);
+
+		gettimeofday(&stop, NULL);
+		size_t lasted = stop.tv_usec - start.tv_usec;
+		//printf("bcd -> str: %lu\n", lasted);
+	}
+
+	printf("%s\n", str);
+
+	bcd_delete(&bcd);
+	free(str);
+	bint_delete(&a);
+}
+*/
+
+void testBigAddition(int argc, char **argv) {
+	
+	t_bint * n = bint_new(100000);
+	
+	bint_set(&n, atoi(argv[1]));
+
+	int end = atoi(argv[2]);
+
+	for (int i = 0 ; i < end ; i++) {
+		bint_add_dst(&n, n, n);
+	}
+
+	puts("add ended");
+
+	//printf("%s\n", bint_to_str(n));
+
+	bint_delete(&n);
+}
 
 int main(int argc, char **argv) {
 	
 	//testDoubleDabble(argc, argv);
 	//testAddition(argc, argv);
-	testShift(argc, argv);
-
+	//testShift(argc, argv);
+	//testPow2(argc, argv);
+	testBigAddition(argc, argv);
 	return (EXIT_SUCCESS);
 }
