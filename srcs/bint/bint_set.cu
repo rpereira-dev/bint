@@ -1,38 +1,34 @@
 #include "bint.h"
 
-void bint_set64(t_bint *dst, long long int i) {
+t_bint *bint_set(t_bint **dst, int i) {
 
-}
-
-void bint_set32(t_bint *dst, int i) {
+	//ensure dst capacity
+	t_bint * r = bint_ensure_size(dst, bint_get_default_size());
+	if (r == NULL) {
+		return (NULL);
+	}
 
 	//if we are setting a zero
 	if (i == 0) {
-		dst->sign = 0;
-		return ;
+		r->sign = 0;
+		r->wordset = 0;
+		return (r);
 	}
 
 	//set the sign
 	if (i < 0) {
-		dst->sign = -1;
+		r->sign = -1;
 		i = -i;
 	} else {
-		dst->sign = 1;
+		r->sign = 1;
 	}
 
 	//set other bits to 0
-	memset(dst->words, 0, (dst->size - 1) * sizeof(int));
+	memset(r->words, 0, (r->size - 1) * sizeof(int));
 	
 	//set the value
-	int *addr = (int*)(dst->words + dst->size - 1);
+	int *addr = (int*)(r->words + r->size - 1);
 	*addr = i;
-	dst->last_word_set = dst->words + dst->size - 1;
-}
-
-void bint_set16(t_bint *dst, short i) {
-	
-}
-
-void bint_set8(t_bint *dst, char i) {
-
+	r->wordset = 1;
+	return (r);
 }

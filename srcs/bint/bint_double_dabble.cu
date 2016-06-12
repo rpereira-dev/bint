@@ -65,8 +65,7 @@ t_bcd *bint_to_bcd(t_bint *i) {
 	}
 
 	//calculate the integer total size
-	size_t wordset = i->words + i->size - i->last_word_set;
-	size_t byteset = wordset * sizeof(unsigned int);
+	size_t byteset = i->wordset * sizeof(unsigned int);
 
 	//else calculate the bit sizes
 	size_t bitset = byteset * 8;
@@ -85,14 +84,14 @@ t_bcd *bint_to_bcd(t_bint *i) {
 	}
 
 	//prepare the bcd pointer
-	memcpy(bcd_str + nbytes_bcd - byteset, i->last_word_set, byteset);
+	memcpy(bcd_str + nbytes_bcd - byteset, i->words + i->size - i->wordset, byteset);
 	memset(bcd_str, 0, nbytes_bcd - byteset);
 
 	//printf("bcd after copy: ", 0), bdump(bcd_str, nbytes_bcd), printf("\n");
 
 	//swap the endian so we always work in little endian
 	if (endianness() == BIG_ENDIAN) {
-		bint_bcd_swap_endian(bcd_str + nbytes_bcd - byteset, wordset);
+		bint_bcd_swap_endian(bcd_str + nbytes_bcd - byteset, i->wordset);
 	}
 
 	//printf("bcd endian fix: ", 0), bdump(bcd_str, nbytes_bcd), printf("\n");
@@ -103,6 +102,7 @@ t_bcd *bint_to_bcd(t_bint *i) {
 	size_t bits_begin = 0;
 	//the address of the last bit set
 	size_t bits_end = 0;
+
 	while (!(*bcd_str_begin & (1 << 7))) {
 
 		//do the shift
@@ -270,4 +270,8 @@ char *bcd_to_str(t_bcd *bcd) {
 	str[j] = 0;
 
 	return (str);
+}
+
+char * bint_to_str(t_bint * i) {
+	return (bcd_to_str(bint_to_bcd(i)));
 }

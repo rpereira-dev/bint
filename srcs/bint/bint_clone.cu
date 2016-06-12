@@ -14,6 +14,6 @@ t_bint *bint_clone(t_bint *src) {
 	
 	dst->sign = src->sign;
 	memcpy(dst->words, src->words, src->size * sizeof(int));
-	dst->last_word_set = dst->words + (src->last_word_set - src->words);
+	dst->wordset = src->wordset;
 	return (dst);
 }

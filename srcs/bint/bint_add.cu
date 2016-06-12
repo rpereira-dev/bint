@@ -81,6 +81,8 @@ static void _bint_add_dst_raw(t_bint *dst, t_bint *a, t_bint *b) {
 
 	unsigned int *awords = a->words + a->size;
 	unsigned int *bwords = b->words + b->size;
+	unsigned int *alastword = a->words + a->size - a->wordset;
+	unsigned int *blastword = b->words + b->size - b->wordset;
 	unsigned int *dstwords = dst->words + dst->size;
 	unsigned int reminder = 0;
 
@@ -88,19 +90,23 @@ static void _bint_add_dst_raw(t_bint *dst, t_bint *a, t_bint *b) {
 	do {
 		*(--dstwords) = *(--awords) + *(--bwords) + reminder;
 		reminder = *dstwords < *awords || *dstwords < *bwords;
-	} while (bwords >= b->last_word_set);
+	} while (bwords >= blastword);
 
-	//if they are remaining bits to add in 'a' and a reminder
-	if (awords >= b->last_word_set && reminder) {
-		*(--dstwords) = *(--awords) + reminder;
+	//add the final reminder to 'dst'
+	if (reminder) {
+		if (awords >= alastword) {
+			*(--dstwords) = *(--awords) + reminder;
+		} else {
+			*(--dstwords) = reminder;
+		}
 	}
 
-	//if they are STILL remaining bits to add in 'a'
-	while (awords >= b->last_word_set) {
+	//finally, add the remaining 'a' to dst
+	while (awords >= alastword) {
 		*(--dstwords) = *(--awords);
 	}
 
-	dst->last_word_set = dstwords + 1;
+	dst->wordset = dst->words + dst->size - dstwords;
 }
 
 t_bint *bint_add(t_bint *a, t_bint *b) {

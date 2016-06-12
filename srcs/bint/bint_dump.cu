@@ -6,7 +6,8 @@ void bint_dump(t_bint *i) {
 		printf("bint: {NULL or 0}");
 	} else {
 		char *sign = i->sign == -1 ? "-" : i->sign == 1 ? "+" : NULL;
-		printf("bint: {size: %u, sign: %2d, words: %s}", i->size, i->sign, sign);
-		bdump(i->last_word_set, (i->size - (i->last_word_set - i->words)) * 4);
+		printf("bint: {size: %u, sign: %2d, words: %s", i->size, i->sign, sign);
+		bdump(i->words + i->size - i->wordset, i->wordset * sizeof(int));
+		printf("}");
 	}
 }

@@ -12,7 +12,7 @@
 typedef struct	s_bint {
 	unsigned int *words; //the raw bits pointer
 	unsigned int size; //size allocated in word at the address 'words'
-	unsigned int *last_word_set; //the last non null bits
+	unsigned int wordset; //the last non null bits
 	char sign; //the sign
 }				t_bint;
 
@@ -36,10 +36,8 @@ void bint_delete(t_bint ** dst);
 t_bint * bint_ensure_size(t_bint ** dst, int size);
 
 /** new */
-t_bint * bint_new64(long int i);
-t_bint * bint_new32(int i);
-t_bint * bint_new16(short i);
-t_bint * bint_new8(char value);
+void bint_set_default_size(unsigned int size);
+unsigned int bint_get_default_size(void);
 
 /** clone, copy, resize */
 t_bint * bint_clone(t_bint * i);
@@ -49,6 +47,7 @@ t_bint * bint_resize(t_bint * i, unsigned int size);
 void bint_dump(t_bint * i);
 t_bcd * bint_to_bcd(t_bint * i);
 char * bcd_to_str(t_bcd * bcd);
+char * bint_to_str(t_bint * i);
 void bcd_dump(t_bcd * bcd);
 void bcd_delete(t_bcd **bcd);
 
@@ -87,9 +86,6 @@ t_bint * bint_shift_right(t_bint * i, int n);
 t_bint * bint_shift_right_dst(t_bint ** dst, t_bint * i, int n);
 
 /** setters */
-void bint_set64(t_bint * dst, long long int i);
-void bint_set32(t_bint * dst, int i);
-void bint_set16(t_bint * dst, short i);
-void bint_set8(t_bint * dst, char i);
+t_bint *bint_set(t_bint **dst, int i);
 
 #endif

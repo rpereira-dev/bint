@@ -1,26 +1,7 @@
 #include "fractal.h"
 #include <time.h>
 
-/*
-void testBint(int argc, char **argv) {
-
-	t_bint *a = bint_new(1024);
-	int value = atoi(argv[1]);
-	bint_set32(a, value);
-
-	t_bcd *bcd = bint_to_bcd(a);
-	printf("final bcd is: "), bcd_dump(bcd), printf("\n");
-
-	char *str = bcd_to_str(bcd);
-	printf("BCD CONVERTED IS: %s , expected: %d\n", str, value);
-
-	bint_delete(&a);
-	bcd_delete(&bcd);
-	free(str);
-}*/
-
-
-void testBint(int argc, char **argv) {
+void testDoubleDabble(int argc, char **argv) {
 
 	char buffer[64];
 	t_bint *a = bint_new(1024);
@@ -34,7 +15,7 @@ void testBint(int argc, char **argv) {
 		if (i % percent == 0) {
 			printf("%f%%\n", ((i - begin) / (float)(end - begin)) * 100);
 		}
-		bint_set32(a, i);
+		bint_set(&a, i);
 
 		t_bcd *bcd = bint_to_bcd(a);
 		char *str = bcd_to_str(bcd);
@@ -50,11 +31,48 @@ void testBint(int argc, char **argv) {
 	}
 }
 
+void testAddition(int argc, char **argv) {
+	int avalue = atoi(argv[1]);
+	int bvalue = atoi(argv[2]);
+	t_bint * a = bint_set(NULL, avalue);
+	t_bint * b = bint_set(NULL, bvalue);
+	t_bint * r = bint_add(a, b);
+
+	char * str = bint_to_str(r);
+	printf("%d + %d = %s (expected %d)\n", avalue, bvalue, str, avalue + bvalue);
+
+
+	free(str);
+	bint_delete(&a);
+	bint_delete(&b);
+	bint_delete(&r);
+}
+
+void testShift(int argc, char **argv) {
+	
+	int value = atoi(argv[1]);
+	int n = atoi(argv[2]);
+	size_t capacity = n * 2;
+
+	bint_set_default_size(capacity);
+	t_bint * a = bint_set(NULL, value);
+	t_bint * r = bint_shift_left(a, n);
+
+	char * str = bint_to_str(r);
+	printf("(%d << %d) = %s\n", value, n, str);
+
+	while(1);
+	free(str);
+	bint_delete(&a);
+	bint_delete(&r);
+}
+
 
 int main(int argc, char **argv) {
 	
-	//testFloatIEE754();
-	testBint(argc, argv);
+	//testDoubleDabble(argc, argv);
+	//testAddition(argc, argv);
+	testShift(argc, argv);
 
 	return (EXIT_SUCCESS);
 }

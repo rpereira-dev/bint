@@ -1,43 +1,49 @@
 #include "bint.h"
 
-//the index of the first and last bit of a word
 #define FIRST_WORD_BIT (0)
 #define LAST_WORD_BIT (sizeof(int) * 8 - 1)
 
 static void bint_shift_left_once(t_bint *dst) {
 	unsigned int *ptr = dst->words + dst->size - 1;
-	unsigned int *end = dst->last_word_set == dst->words ? dst->words : dst->last_word_set - 1;
+	unsigned int *end = dst->words + dst->size - dst->wordset;
 	int reminder = 0;
-	while (ptr > end) {
-		//will it overflow: '* 1101' -> '* 1010' -> '*1 1010'
-		int next_reminder = BITSET(*ptr, LAST_WORD_BIT);
+
+	while (ptr >= end) {
+
+		//check overflow (if the last bit is set, then it will overflow)
+		unsigned int next_reminder = *ptr & (1 << LAST_WORD_BIT);
 
 		//operate the shift
 		*ptr = *ptr << 1;
 
 		//if there was a previous overflow, set the first bit
 		if (reminder) {
-			SETBIT(*ptr, FIRST_WORD_BIT);
+			*ptr = *ptr | (1 << FIRST_WORD_BIT);
 		}
 		reminder = next_reminder;
 		--ptr;
 	}
+
+	if (reminder) {	
+		*ptr = *ptr | (1 << FIRST_WORD_BIT);
+		dst->wordset++;
+	}
 }
 
 static void bint_shift_right_once(t_bint *dst) {
-	unsigned int *ptr = dst->last_word_set;
+	unsigned int *ptr = dst->words + dst->size - dst->wordset;
 	unsigned int *end = dst->words + dst->size;
 	int reminder = 0;
 	while (ptr < end) {
-		//will it overflow: '1101 *' -> '0110 *' -> '0110 1*'
-		int next_reminder = BITSET(*ptr, FIRST_WORD_BIT);
+		//check underflow (if the first bit is set, then it will underflow)
+		unsigned int next_reminder = *ptr & (1 << FIRST_WORD_BIT);
 
 		//operate the shift
 		*ptr = *ptr >> 1;
 
 		//if there was a previous overflow, set the last bit
 		if (reminder) {
-			SETBIT(*ptr, LAST_WORD_BIT);
+			*ptr = *ptr | (1 << LAST_WORD_BIT);
 		}
 		reminder = next_reminder;
 		--ptr;
