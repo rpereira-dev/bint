@@ -1,14 +1,14 @@
 #include "bint.h"
 
-#define _BINT_DEFAULT_SIZE (sizeof(int) * 1024)
+#define _BINT_DEFAULT_SIZE (1024)
 
-unsigned int _default_size = _BINT_DEFAULT_SIZE;
+size_t _default_size = _BINT_DEFAULT_SIZE;
 
-void bint_set_default_size(unsigned int size) {
+void bint_set_default_size(size_t size) {
 	_default_size = size;
 }
 
-unsigned int bint_get_default_size(void) {
+size_t bint_get_default_size(void) {
 	return (_default_size);
 }
 

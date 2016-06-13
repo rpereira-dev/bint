@@ -37,16 +37,49 @@ static void bcd_shift_left_once(unsigned char *addr, size_t len) {
 	}
 }
 
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wshift-count-overflow"
+
+static void bint_bcd_swap_endian_word64(t_word *words, size_t i) {
+	words[i] = ((words[i] << 8) & 0xFF00FF00FF00FF00ULL ) | ((words[i] >> 8) & 0x00FF00FF00FF00FFULL);
+    words[i] = ((words[i] << 16) & 0xFFFF0000FFFF0000ULL ) | ((words[i] >> 16) & 0x0000FFFF0000FFFFULL);
+    words[i] = (words[i] << 32) | (words[i] >> 32);
+}
+
+static void bint_bcd_swap_endian_word32(t_word *words, size_t i) {
+	t_word n = words[i];
+	words[i] = ((n >> 24) & 0xff) | ((n << 8) & 0xff0000) | ((n >> 8) & 0xff00) | ((n << 24) & 0xff000000);
+}
+
+static void bint_bcd_swap_endian_word16(t_word *words, size_t i) {
+	t_word n = words[i];
+	words[i] = (n >> 8) | (n << 8);
+}
+
+# pragma GCC diagnostic pop
+
 /** interpret the given address has an integer 32 bits array, and swap the endian of each integer */
-static void bint_bcd_swap_endian(void *addr, unsigned int nword) {
-	unsigned int *words = (unsigned int*)addr;
-	int i;
+static void bint_bcd_swap_endian(void *addr, size_t nword) {
+	t_word *words = (t_word*)addr;
+	size_t i;
+	void (*swap_f)();
+
+	if (BINT_WORD_BITS == 16) {
+		swap_f = bint_bcd_swap_endian_word16;
+	} else if (BINT_WORD_BITS == 32) {
+		swap_f = bint_bcd_swap_endian_word32;
+	} else if (BINT_WORD_BITS == 64) {
+		swap_f = bint_bcd_swap_endian_word32;
+	} else {
+		puts("WARNING DOUBLE DABBLE: WORD SIZE UNKNOWN?");
+		return ;
+	}
 
 	for (i = 0 ; i < nword ; i++) {
-		unsigned int n = words[i];
-		words[i] = ((n >> 24) & 0xff) | ((n << 8) & 0xff0000) | ((n >> 8) & 0xff00) | ((n << 24) & 0xff000000);
+		swap_f(words, i);
 	}
 }
+
 
 /** implementation based on this document: http://www.tkt.cs.tut.fi/kurssit/1426/S12/Ex/ex4/Binary2BCD.pdf */
 t_bcd *bint_to_bcd(t_bint *i) {
@@ -65,7 +98,7 @@ t_bcd *bint_to_bcd(t_bint *i) {
 	}
 
 	//calculate the integer total size
-	size_t byteset = i->wordset * sizeof(unsigned int);
+	size_t byteset = i->wordset * sizeof(t_word);
 
 	//else calculate the bit sizes
 	size_t bitset = byteset * 8;
@@ -226,7 +259,7 @@ char *bcd_to_str(t_bcd *bcd) {
 
 	//skip leading zeroes
 	unsigned char *raw_bytes = bcd->raw_bytes;
-	unsigned int *ptr = (unsigned int*)raw_bytes;
+	t_word *ptr = (t_word*)raw_bytes;
 	while (*ptr == 0) {
 		++ptr;
 	}

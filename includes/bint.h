@@ -6,16 +6,24 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/time.h>
+# include <math.h>
+# include <limits.h>
 
 //we define zero != NULL so we can know whether a function returns a memory error (NULL) or actually zero (BINT_ZERO)
 # define BINT_ZERO ((t_bint*)1)
 
+//the 't_word' type: the big integer is stored in an array of t_word
+typedef unsigned int t_word;
+
+//size of a word in bit
+# define BINT_WORD_BITS (sizeof(t_word) * 8)
+
 /** a data structure which represent integer with a custom size */
 /** the 'bits' address contains a raw array of 'int' in the device endianness */
 typedef struct	s_bint {
-	unsigned int *words; //the raw bits pointer
-	unsigned int size; //size allocated in word at the address 'words'
-	unsigned int wordset; //the last non null bits
+	t_word *words; //the raw bits pointer
+	size_t size; //size allocated in word at the address 'words'
+	size_t wordset; //the last non null bits
 	char sign; //the sign
 }				t_bint;
 
@@ -31,7 +39,7 @@ typedef struct	s_bcd {
 }				t_bcd;
 
 /** create a new big int on the given size */
-t_bint * bint_new(unsigned int size);
+t_bint * bint_new(t_word size);
 /** delete the given integer */
 void bint_delete(t_bint ** dst);
 
@@ -39,12 +47,12 @@ void bint_delete(t_bint ** dst);
 t_bint * bint_ensure_size(t_bint ** dst, int size);
 
 /** new */
-void bint_set_default_size(unsigned int size);
-unsigned int bint_get_default_size(void);
+void bint_set_default_size(size_t size);
+size_t bint_get_default_size(void);
 
 /** clone, copy, resize */
 t_bint * bint_clone(t_bint * i);
-t_bint * bint_resize(t_bint * i, unsigned int size);
+t_bint * bint_resize(t_bint * i, size_t size);
 
 /** output funtions */
 void bint_dump(t_bint * i);
@@ -52,8 +60,13 @@ t_bcd * bint_to_bcd(t_bint * i);
 char * bcd_to_str(t_bcd * bcd);
 char * bint_to_str(t_bint * i);
 void bcd_dump(t_bcd * bcd);
-void bcd_delete(t_bcd **bcd);
-size_t bint_digit(t_bint *n);
+void bcd_delete(t_bcd ** bcd);
+
+/** log */
+# define BINT_LOG_BASE_E (INT_MAX)
+double bint_log_lower(t_bint *integer, int base);
+double bint_log_upper(t_bint *integer, int base);
+double bint_log(t_bint *integer, int base);
 
 /** comparison */
 int bint_is_zero(t_bint *i);

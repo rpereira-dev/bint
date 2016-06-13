@@ -1,6 +1,4 @@
 #include "fractal.h"
-#include <time.h>
-
 /*
 void testDoubleDabble(int argc, char **argv) {
 
@@ -21,7 +19,7 @@ void testDoubleDabble(int argc, char **argv) {
 		t_bcd *bcd = bint_to_bcd(a);
 		char *str = bcd_to_str(bcd);
 
-		itoa(i, buffer, 10);
+		snprintf(buffer, sizeof(buffer), "%d", i);
 
 		if (strcmp(str, buffer) != 0) {
 			printf("ERROR OCCURED ON NUMBER %d: have(%s) : exepected(%s)\n", i, str, buffer);
@@ -109,6 +107,7 @@ void testPow2(int argc, char **argv) {
 }
 */
 
+/**
 void testBigAddition(int argc, char **argv) {
 	
 	t_bint * n = bint_new(100000);
@@ -127,6 +126,19 @@ void testBigAddition(int argc, char **argv) {
 
 	bint_delete(&n);
 }
+*/
+
+
+void testLog(int argc, char **argv) {
+	int base = strcmp(argv[1], "e") == 0 ? BINT_LOG_BASE_E : atoi(argv[1]);
+	int value = atoi(argv[2]);
+	t_bint * integer = bint_set(NULL, value);
+	double logvalue = bint_log(integer, base);
+	bint_delete(&integer);
+
+	printf("log_%s(%d) = %f\n", argv[1], value, logvalue);
+}
+
 
 int main(int argc, char **argv) {
 	
@@ -134,6 +146,12 @@ int main(int argc, char **argv) {
 	//testAddition(argc, argv);
 	//testShift(argc, argv);
 	//testPow2(argc, argv);
-	testBigAddition(argc, argv);
+	//testBigAddition(argc, argv);
+	testLog(argc, argv);
 	return (EXIT_SUCCESS);
 }
+
+
+
+
+
