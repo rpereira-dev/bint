@@ -69,8 +69,15 @@ double bint_log_upper(t_bint *integer, int base);
 double bint_log(t_bint *integer, int base);
 
 /** comparison */
-int bint_is_zero(t_bint *i);
 int bint_cmp(t_bint * a, t_bint * b);
+
+/**
+**	return 1 if the given number is 0, or return 0 if the number isnt 0.
+**	N.B: a 0 bint should always has it 'wordset' set to 0, HOWEVER, if it isnt,
+**	     a comparison word by word is done to check is the number is actually 0 or not.
+**	     if it is, it 'wordset' is reset to 0.
+*/
+int bint_is_zero(t_bint *i);
 
 /** copy (unsafe) */
 void bint_copy(t_bint * dst, t_bint * i);
@@ -97,10 +104,10 @@ t_bint * bint_mod_dst(t_bint ** dst, t_bint * a, t_bint * b);
 t_bint ** bint_divmod_dst(t_bint *** dst, t_bint * a, t_bint * b);
 
 /** shift functions */
-t_bint * bint_shift_left(t_bint * i, int n);
-t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * i, int n);
-t_bint * bint_shift_right(t_bint * i, int n);
-t_bint * bint_shift_right_dst(t_bint ** dst, t_bint * i, int n);
+t_bint * bint_shift_left(t_bint * integer, int n);
+t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n);
+t_bint * bint_shift_right(t_bint * integer, int n);
+t_bint * bint_shift_right_dst(t_bint ** dst, t_bint * integer, int n);
 
 /** setters */
 t_bint *bint_set(t_bint **dst, int i);

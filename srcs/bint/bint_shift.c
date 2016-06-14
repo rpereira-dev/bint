@@ -3,57 +3,75 @@
 #define FIRST_WORD_BIT (0)
 #define LAST_WORD_BIT (sizeof(int) * 8 - 1)
 
-static void bint_shift_left_once(t_bint *dst) {
-	unsigned int *ptr = dst->words + dst->size - 1;
-	unsigned int *end = dst->words + dst->size - dst->wordset;
-	int reminder = 0;
+/****************************    LEFT SHITING    **********************************/
 
-	while (ptr >= end) {
+/** left-shift n times the given big integer given that 0 <= n <= BINT_WORD_BITS */
+static void bint_shift_left_n(t_bint *r, t_word *left, t_word *right, size_t n) {
 
-		//check overflow (if the last bit is set, then it will overflow)
-		unsigned int next_reminder = *ptr & (1 << LAST_WORD_BIT);
+	//we do the shift right to left to handle overflow
 
-		//operate the shift
-		*ptr = *ptr << 1;
-
-		//if there was a previous overflow, set the first bit
-		if (reminder) {
-			*ptr = *ptr | (1 << FIRST_WORD_BIT);
-		}
-		reminder = next_reminder;
-		--ptr;
+	if (n == 0) {
+		return ;
 	}
 
-	if (reminder) {	
-		*ptr = *ptr | (1 << FIRST_WORD_BIT);
-		dst->wordset++;
+	//carry / reminder mask
+	t_word carry_mask = 0;
+	t_word tmp_mask = 0;
+
+	//the raw mask to apply
+	t_word mask = ((1 << n) - 1) << (BINT_WORD_BITS - n);
+
+	//for each word
+	while (right >= left) {
+
+		//calculate next mask
+		tmp_mask = (*right & mask) >> (BINT_WORD_BITS - n);
+
+		//do the shift
+		*right = *right << n | carry_mask;
+
+		//assign next mask
+		carry_mask = tmp_mask;
+	
+		//process next word
+		--right;
 	}
-}
 
-static void bint_shift_right_once(t_bint *dst) {
-	unsigned int *ptr = dst->words + dst->size - dst->wordset;
-	unsigned int *end = dst->words + dst->size;
-	int reminder = 0;
-	while (ptr < end) {
-		//check underflow (if the first bit is set, then it will underflow)
-		unsigned int next_reminder = *ptr & (1 << FIRST_WORD_BIT);
-
-		//operate the shift
-		*ptr = *ptr >> 1;
-
-		//if there was a previous overflow, set the last bit
-		if (reminder) {
-			*ptr = *ptr | (1 << LAST_WORD_BIT);
-		}
-		reminder = next_reminder;
-		--ptr;
+	if (carry_mask && r->wordset < r->size) {
+		*right = carry_mask;
+		++r->wordset;
 	}
 }
 
-static t_bint *bint_shift_dst_raw(t_bint **dst, t_bint *integer, unsigned int n, void (*shift_function)(t_bint *)) {
+t_bint *bint_shift_left(t_bint *integer, int n) {
+	return (bint_shift_left_dst(NULL, integer, n));
+}
+
+t_bint *bint_shift_left_dst(t_bint **dst, t_bint *integer, int n) {
+
+	//if left shifting negatively, then shift right
+	if (n < 0) {
+		return (bint_shift_right_dst(dst, integer, -n));
+	}
+
+	//if null
+	if (integer == NULL) {
+		return (NULL);
+	}
+
+	//if 0, return 0
+	if (bint_is_zero(integer)) {
+		return (BINT_ZERO);
+	}
+
+	//number of raw words to shift
+	size_t word_to_shift = n / BINT_WORD_BITS;
+
+	//size of dst so the result can be stored (left shiting handle overflow)
+	size_t size = (word_to_shift < integer->size - integer->wordset) ? integer->size : (integer->size + word_to_shift + 1);
 
 	//the pointer to store the result
-	t_bint *r = bint_ensure_size(dst, integer->size);
+	t_bint *r = bint_ensure_size(dst, size);
 
 	//if allocation failed...
 	if (r == NULL) {
@@ -63,68 +81,146 @@ static t_bint *bint_shift_dst_raw(t_bint **dst, t_bint *integer, unsigned int n,
 	//copy the integer to shift
 	bint_copy(r, integer);
 
-	//shift it n times
-	unsigned int i;
-	for (i = 0 ; i < n ; i++) {
-		shift_function(r);
+	//shift each word of the integer 'word_to_shift' times left
+	if (word_to_shift >= 1) {
+
+		//number of word to shift
+		t_word *right = r->words + r->size - 1;
+		t_word *left = r->words + r->size - r->wordset;
+
+		while (left <= right) {
+			*(left - word_to_shift) = *left;
+			++left;
+		}
+
+		//set to most right word to 0 (they've been shifted to left already)
+		memset(r->words + r->size - word_to_shift, 0, word_to_shift * sizeof(t_word));
+
+		//increase number of wordset
+		r->wordset += word_to_shift;
+
+		//calculate the remaining bits to shift
+		n = n % BINT_WORD_BITS;
 	}
+
+	//the begining shift address (most right word)
+	t_word *right = r->words + r->size - 1 - word_to_shift;
+	t_word *left = r->words + r->size - r->wordset;
+
+	//shift the remaining bits
+ 	bint_shift_left_n(r, left, right, n);
 
 	return (r);
 }
 
-t_bint *bint_shift_left(t_bint *i, int n) {
-	return (bint_shift_left_dst(NULL, i, n));
+
+/****************************    RIGHT SHITING    **********************************/
+
+/** right shift n times the given big integer given that 0 <= n <= BINT_WORD_BITS */
+static void bint_shift_right_n(t_bint *r, t_word *left, t_word *right, size_t n) {
+
+	//we do the shift left to right to handle underflow on words
+	if (n == 0) {
+		return ;
+	}
+
+	//carry / reminder mask
+	t_word carry_mask = 0;
+	t_word tmp_mask = 0;
+
+	//the raw mask to apply
+	t_word mask = (1 << n) - 1;
+
+	//for each word
+	while (left <= right) {
+
+		//calculate next mask
+		tmp_mask = (*left & mask) << (BINT_WORD_BITS - n);
+
+		//do the shift
+		*left = *left >> n | carry_mask;
+
+		//assign next mask
+		carry_mask = tmp_mask;
+	
+		//process next word
+		++left;
+	}
+
+	//call is_zero function : if the shift made the number equals to zero, 'bint_is_zero()' will set it properly to 0
+	bint_is_zero(r);
 }
 
-t_bint *bint_shift_left_dst(t_bint **dst, t_bint *i, int n) {
 
-	//if i is 0, return 0
-	if (i == NULL || i->sign == 0) {
+t_bint *bint_shift_right(t_bint *integer, int n) {
+	return (bint_shift_right_dst(NULL, integer, n));
+}
+
+t_bint *bint_shift_right_dst(t_bint **dst, t_bint *integer, int n) {
+
+	//if right shifting negatively, then shift left
+	if (n < 0) {
+		return (bint_shift_left_dst(dst, integer, -n));
+	}
+
+	//if null
+	if (integer == NULL) {
 		return (NULL);
 	}
 
-	//the shift function to use (left or right)
-	void (*shift_function)(t_bint *);
-	//the number of time to shift
-	unsigned int times;
-
-	//if n is negative, then we shift right -n times
-	if (n < 0) {
-		times = -n;
-		shift_function = bint_shift_right_once;
-	} else {
-		//else n is positive, we shift left n times
-		times = n;
-		shift_function = bint_shift_left_once;
-	}
-	return (bint_shift_dst_raw(dst, i, times, shift_function));
-}
-
-
-t_bint *bint_shift_right(t_bint *i, int n) {
-	return (bint_shift_left_dst(NULL, i, n));
-}
-
-t_bint *bint_shift_right_dst(t_bint **dst, t_bint *i, int n) {
-
-	//if i is 0, return 0
-	if (bint_is_zero(i)) {
+	//if 0, return 0
+	if (bint_is_zero(integer)) {
 		return (BINT_ZERO);
 	}
 
-	//the shift function to use (left or right)
-	void (*shift_function)(t_bint *);
-	//the number of time to shift
-	unsigned int times;
+	//number of raw words to shift
+	size_t word_to_shift = n / BINT_WORD_BITS;
 
-	//if n is negative, then we shift left -n times
-	if (n < 0) {
-		times = -n;
-		shift_function = bint_shift_left_once;
-	} else {
-		//else n is positive, we shift right n times
-		times = n;
-		shift_function = bint_shift_right_once;
+	//size of dst so the result can be stored (right shifting doesnt handle underflow)
+	size_t size = integer->size;
+
+	//the pointer to store the result
+	t_bint *r = bint_ensure_size(dst, size);
+
+	//if allocation failed...
+	if (r == NULL) {
+		return (NULL);
 	}
-	return (bint_shift_dst_raw(dst, i, times, shift_function));
+
+	//copy the integer to shift
+	bint_copy(r, integer);
+
+	//shift each word of the integer 'word_to_shift' times left
+	if (word_to_shift >= 1) {
+
+		//number of word to shift
+		t_word *right = r->words + r->size - 1 - word_to_shift;
+		t_word *left = r->words + r->size - r->wordset;
+
+		while (right >= left) {
+			*(right + word_to_shift) = *right;
+			--right;
+		}
+
+		//set to most left word to 0 (they've been shifted to right)
+		memset(left, 0, word_to_shift * sizeof(t_word));
+
+		//decrease number of wordset (most left words were unset by the shiting)
+		r->wordset -= word_to_shift;
+		if (r->wordset < 0) {
+			r->wordset = 0;
+		}
+
+		//calculate the remaining bits to shift
+		n = n % BINT_WORD_BITS;
+	}
+
+	//the begining shift address (most right word)
+	t_word *right = r->words + r->size - 1;
+	t_word *left = r->words + r->size - r->wordset;
+
+	//shift the remaining bits
+ 	bint_shift_right_n(r, left, right, n);
+
+	return (r);
 }

@@ -1,4 +1,5 @@
 #include "fractal.h"
+
 /*
 void testDoubleDabble(int argc, char **argv) {
 
@@ -48,7 +49,7 @@ void testAddition(int argc, char **argv) {
 	bint_delete(&r);
 }*/
 
-/**
+
 void testShift(int argc, char **argv) {
 	
 	int value = atoi(argv[1]);
@@ -66,7 +67,7 @@ void testShift(int argc, char **argv) {
 	bint_delete(&a);
 	bint_delete(&r);
 }
-*/
+
 
 /**
 void testPow2(int argc, char **argv) {
@@ -128,7 +129,7 @@ void testBigAddition(int argc, char **argv) {
 }
 */
 
-
+/*
 void testLog(int argc, char **argv) {
 	int base = strcmp(argv[1], "e") == 0 ? BINT_LOG_BASE_E : atoi(argv[1]);
 	int value = atoi(argv[2]);
@@ -137,17 +138,17 @@ void testLog(int argc, char **argv) {
 	bint_delete(&integer);
 
 	printf("log_%s(%d) = %f\n", argv[1], value, logvalue);
-}
+}*/
 
 
 int main(int argc, char **argv) {
 	
 	//testDoubleDabble(argc, argv);
 	//testAddition(argc, argv);
-	//testShift(argc, argv);
+	testShift(argc, argv);
 	//testPow2(argc, argv);
 	//testBigAddition(argc, argv);
-	testLog(argc, argv);
+	//testLog(argc, argv);
 	return (EXIT_SUCCESS);
 }
 

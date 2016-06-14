@@ -4,7 +4,7 @@ SRCS = ./srcs/main.c $(wildcard ./srcs/floatIEE754/*.c) $(wildcard ./srcs/bint/*
 C_OBJ = $(SRCS:.c=.o)
 LIBDIR = ./lib
 CC = gcc
-FLAGS = -Ofast
+FLAGS =
 
 all: $(NAME)
 

@@ -8,7 +8,7 @@ t_bint *bint_new(unsigned int size) {
 	}
 
 	//allocate memory space
-	t_bint *i = (t_bint*)malloc(sizeof(t_bint) + size * sizeof(int));
+	t_bint *i = (t_bint*)malloc(sizeof(t_bint) + size * sizeof(t_word));
 	if (i == NULL) {
 		return (NULL);
 	}
