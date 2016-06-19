@@ -8,12 +8,14 @@
 # include <sys/time.h>
 # include <math.h>
 # include <limits.h>
+# include <stdint.h>
 
 //we define zero != NULL so we can know whether a function returns a memory error (NULL) or actually zero (BINT_ZERO)
 # define BINT_ZERO ((t_bint*)1)
 
 //the 't_word' type: the big integer is stored in an array of t_word
-typedef unsigned int t_word;
+typedef uint32_t t_word;
+typedef uint64_t t_dword;
 
 //size of a word in bit
 # define BINT_WORD_BITS (sizeof(t_word) * 8)
@@ -43,6 +45,10 @@ t_bint * bint_new(t_word size);
 /** delete the given integer */
 void bint_delete(t_bint ** dst);
 
+/** normalize the given integer so it take the least possible memory space (+ update it constants) */
+void bint_normalize_dst(t_bint **dst);
+t_bint * bint_normalize(t_bint * src);
+
 /** ensure that the big integer at address 'dst' has the given size, if not, dst is deleted and a new one is allocated */
 t_bint * bint_ensure_size(t_bint ** dst, int size);
 
@@ -53,6 +59,10 @@ size_t bint_get_default_size(void);
 /** clone, copy, resize */
 t_bint * bint_clone(t_bint * i);
 t_bint * bint_resize(t_bint * i, size_t size);
+
+/** bits operation functions */
+void bint_set_bit(t_bint *integer, size_t bit);
+void bint_unset_bit(t_bint *integer, size_t bit);
 
 /** output funtions */
 void bint_dump(t_bint * i);
@@ -77,7 +87,7 @@ int bint_cmp(t_bint * a, t_bint * b);
 **	     a comparison word by word is done to check is the number is actually 0 or not.
 **	     if it is, it 'wordset' is reset to 0.
 */
-int bint_is_zero(t_bint *i);
+int bint_is_zero(t_bint * i);
 
 /** copy (unsafe) */
 void bint_copy(t_bint * dst, t_bint * i);

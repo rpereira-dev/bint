@@ -105,8 +105,6 @@ static void _bint_add_dst_raw(t_bint *dst, t_bint *a, t_bint *b) {
 	while (awords >= alastword) {
 		*(--dstwords) = *(--awords);
 	}
-
-	dst->wordset = dst->words + dst->size - dstwords;
 }
 
 t_bint *bint_add(t_bint *a, t_bint *b) {
@@ -122,7 +120,7 @@ t_bint *bint_add_dst(t_bint **dst, t_bint *a, t_bint *b) {
 	}
 
 	//the size to store the result
-	int size = a == NULL ? b->size : b == NULL ? a->size : a->size > b->size ? a->size : b->size;
+	size_t size = a == NULL ? b->size : b == NULL ? a->size : a->size > b->size ? a->size : b->size;
 
 	//ensure that 'dst' bint has the given size
 	t_bint * r = bint_ensure_size(dst, size);
@@ -135,9 +133,9 @@ t_bint *bint_add_dst(t_bint **dst, t_bint *a, t_bint *b) {
 	//do the addition, r has now a correct size to store the result
 
 	//if one is NULL, return a copy of the other
-	if (a == NULL || a->sign == 0) {
+	if (bint_is_zero(a)) {
 		bint_copy(r, b);
-	} else if (b == NULL || b->sign == 0) {
+	} else if (bint_is_zero(b)) {
 		bint_copy(r, a);
 	} else {
 
@@ -175,6 +173,7 @@ t_bint *bint_add_dst(t_bint **dst, t_bint *a, t_bint *b) {
 	}
 
 	//return the result
+	bint_normalize_dst(&r);
 	return (r);
 }
 

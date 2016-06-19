@@ -156,7 +156,7 @@ t_bcd *bint_to_bcd(t_bint *i) {
 	size_t bytes_in_column = 0;
 
 	//printf("bcd initial   : ", bits), bdump(bcd_str, nbytes_bcd), printf("\n");
-
+	
 	//for each bits
 	while (1) {
 

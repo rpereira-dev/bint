@@ -1,13 +1,16 @@
 #include "bint.h"
 
-void bint_dump(t_bint *i) {
+void bint_dump(t_bint *integer) {
 
-	if (i == NULL || i->sign == 0) {
-		printf("bint: {NULL or 0}");
+	if (integer == NULL) {
+		printf("bint: {NULL}");
+	}
+	else if (bint_is_zero(integer)) {
+		printf("bint: {0}");
 	} else {
-		char *sign = i->sign == -1 ? "-" : i->sign == 1 ? "+" : NULL;
-		printf("bint: {size: %u, sign: %2d, words: %s", i->size, i->sign, sign);
-		bdump(i->words + i->size - i->wordset, i->wordset * sizeof(int));
+		char sign = (integer->sign == -1) ? '-' : (integer->sign == 1) ? '+' : '0';
+		printf("bint: {size: %lu, wordset: %lu, sign: %c, words: ", integer->size, integer->wordset, sign);
+		bdump(integer->words + integer->size - integer->wordset, integer->wordset * sizeof(t_word));
 		printf("}");
 	}
 }

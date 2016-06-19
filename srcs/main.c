@@ -49,7 +49,7 @@ void testAddition(int argc, char **argv) {
 	bint_delete(&r);
 }*/
 
-
+/**
 void testShift(int argc, char **argv) {
 	
 	int value = atoi(argv[1]);
@@ -67,7 +67,25 @@ void testShift(int argc, char **argv) {
 	bint_delete(&a);
 	bint_delete(&r);
 }
+*/
 
+void testMult(int argc, char **argv) {
+	int avalue = atoi(argv[1]);
+	int bvalue = atoi(argv[2]);
+	//t_bint * a = bint_set_pow2(NULL, avalue);
+	//t_bint * b = bint_set_pow2(NULL, bvalue);
+	t_bint * a = bint_set(NULL, avalue);
+	t_bint * b = bint_set(NULL, bvalue);
+	t_bint * r = bint_mult(a, b);
+
+	//bint_dump(r), puts("");
+
+	char * astr = bint_to_str(a);
+	char * bstr = bint_to_str(b);
+	char * rstr = bint_to_str(r);
+	printf("%s x %s = \n%s\n", astr, bstr, rstr);
+
+}
 
 /**
 void testPow2(int argc, char **argv) {
@@ -143,9 +161,10 @@ void testLog(int argc, char **argv) {
 
 int main(int argc, char **argv) {
 	
+	testMult(argc, argv);
 	//testDoubleDabble(argc, argv);
 	//testAddition(argc, argv);
-	testShift(argc, argv);
+	//testShift(argc, argv);
 	//testPow2(argc, argv);
 	//testBigAddition(argc, argv);
 	//testLog(argc, argv);
