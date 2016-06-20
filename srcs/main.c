@@ -48,7 +48,6 @@ void testAddition(int argc, char **argv) {
 	bint_delete(&b);
 	bint_delete(&r);
 }*/
-
 /**
 void testShift(int argc, char **argv) {
 	
@@ -64,12 +63,27 @@ void testShift(int argc, char **argv) {
 	printf("(%d << %d) = %s\n", value, n, str);
 
 	free(str);
-	bint_delete(&a);
+
+	bint_dump(a), puts("");
+	bint_dump(r), puts("");
+
 	bint_delete(&r);
+
+	puts("");
+
+	bint_dump(a), puts("");
+	bint_shift_left_dst(&a, a, n);
+	str = bint_to_str(a);
+	bint_dump(a), puts("");
+
+
+	free(str);
+
+	bint_delete(&a);
 }
 */
 
-void testMult(int argc, char **argv) {
+void testMult1(int argc, char **argv) {
 	int avalue = atoi(argv[1]);
 	int bvalue = atoi(argv[2]);
 	//t_bint * a = bint_set_pow2(NULL, avalue);
@@ -83,9 +97,27 @@ void testMult(int argc, char **argv) {
 	char * astr = bint_to_str(a);
 	char * bstr = bint_to_str(b);
 	char * rstr = bint_to_str(r);
-	printf("%s x %s = \n%s\n", astr, bstr, rstr);
-
+	printf("%s x %s = %s\n", astr, bstr, rstr);
 }
+
+/*
+void testMult2(int argc, char **argv) {
+	int asize = atoi(argv[1]);
+	int bsize = atoi(argv[2]);
+
+	srand(time(NULL));
+	t_bint * a = bint_random(asize);
+	t_bint * b = bint_random(bsize);
+	t_bint * r = bint_mult(a, b);
+
+	//bint_dump(r), puts("");
+
+	char * astr = bint_to_str(a);
+	char * bstr = bint_to_str(b);
+	char * rstr = bint_to_str(r);
+	printf("%s x %s = \n%s\n", astr, bstr, rstr);
+}
+*/
 
 /**
 void testPow2(int argc, char **argv) {
@@ -161,7 +193,8 @@ void testLog(int argc, char **argv) {
 
 int main(int argc, char **argv) {
 	
-	testMult(argc, argv);
+	testMult1(argc, argv);
+	//testMult2(argc, argv);
 	//testDoubleDabble(argc, argv);
 	//testAddition(argc, argv);
 	//testShift(argc, argv);

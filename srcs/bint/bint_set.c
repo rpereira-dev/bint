@@ -44,7 +44,7 @@ t_bint * bint_set_pow2(t_bint **dst, size_t i) {
 	r->sign = 1;
 	r->wordset = nwords;
 
-	memset(r->words, 0, r->size * sizeof(int));
+	memset(r->words, 0, r->size * sizeof(t_word));
 	i = i % wordbits;
 	*(r->words + r->size - r->wordset) = (1 << i);
 	return (r);

@@ -1,44 +1,32 @@
 #include "bint.h"
 
-//calculate actual wordset
-static size_t bint_normalize_calculate_wordset(t_bint *integer) {
+void bint_update_wordset(t_bint * integer) {
+	if (integer == NULL || integer == BINT_ZERO) {
+		return ;
+	}
+
 	size_t i = 0;
-	while (*(integer->words + i) == 0) {
+	while (*(integer->words + i) == 0 && i < integer->size) {
 		++i;
 	}
-	return (integer->size - i);
+	integer->wordset = integer->size - i;
+	printf("wordset set to: %d\n", integer->wordset);
 }
 
-void bint_normalize_dst(t_bint **dst) {
-	if (dst == NULL || *dst == NULL) {
-		return ;
-	}
-
-	//calculate actual wordset
-	size_t wordset = bint_normalize_calculate_wordset(*dst);
-
-	//if no word are set
-	if (wordset == 0) {
-		bint_delete(dst);
-		*dst = BINT_ZERO;
-		return ;
-	}
-
-	//set wordset
-	(*dst)->wordset = wordset;
-
-	//only reallocate if more than half the memory isnt used
-	if (wordset >= (*dst)->size / 2) {
+void bint_normalize_dst(t_bint ** dst) {
+	if (dst == NULL || *dst == NULL || bint_is_zero(*dst)) {
 		return ;
 	}
 
 	//move the memory
-	memmove((*dst)->words, (*dst)->words + (*dst)->size - wordset, wordset);
+	memmove((*dst)->words, (*dst)->words + (*dst)->size - (*dst)->wordset, (*dst)->wordset * sizeof(t_word));
 
 	//reallocate
-	*dst = (t_bint*)realloc(*dst, sizeof(t_bint) + wordset * sizeof(t_word));
-	(*dst)->size = wordset;
-	(*dst)->wordset = wordset;
+	*dst = (t_bint*)realloc(*dst, sizeof(t_bint) + (*dst)->wordset * sizeof(t_word));
+	if (*dst == NULL) {
+		return ;
+	}
+	(*dst)->size = (*dst)->wordset;
 }
 
 t_bint * bint_normalize(t_bint * src) {
@@ -51,24 +39,15 @@ t_bint * bint_normalize(t_bint * src) {
 		return (BINT_ZERO);
 	}
 
-	//calculate actual wordset
-	size_t wordset = bint_normalize_calculate_wordset(src);
-
-	//if no word are set
-	if (wordset == 0) {
-		return (BINT_ZERO);
-	}
-
 	//allocate new integer
-	t_bint * dst = bint_new(wordset);
+	t_bint * dst = bint_new(src->wordset);
 	if (dst == NULL) {
 		return (NULL);
 	}
 
 	//move the memory
-	memcpy(dst->words, src->words + src->size - wordset, wordset);
-	dst->size = wordset;
-	dst->wordset = wordset;
+	memcpy(dst->words, src->words + src->size - src->wordset, src->wordset);
+	dst->wordset = src->wordset;
 	dst->sign = src->sign;
 
 	return (dst);

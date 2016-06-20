@@ -1,9 +1,14 @@
 #include "bint.h"
 
 /** assumre that dst->size >= src->size */
-void bint_copy(t_bint *dst, t_bint *src) {
+void bint_copy(t_bint * dst, t_bint * src) {
 
 	if (dst == src) {
+		return ;
+	}
+
+	if (dst->size < src->wordset) {
+		puts("COPY OVERFLOW! dst is too small");
 		return ;
 	}
 

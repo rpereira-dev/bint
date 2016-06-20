@@ -1,7 +1,7 @@
 #include "bint.h"
 
-#define FIRST_WORD_BIT (0)
-#define LAST_WORD_BIT (sizeof(int) * 8 - 1)
+# define FIRST_WORD_BIT (0)
+# define LAST_WORD_BIT (sizeof(int) * 8 - 1)
 
 /****************************    LEFT SHITING    **********************************/
 
@@ -23,7 +23,6 @@ static void bint_shift_left_n(t_bint *r, t_word *left, t_word *right, size_t n) 
 
 	//for each word
 	while (right >= left) {
-
 		//calculate next mask
 		tmp_mask = (*right & mask) >> (BINT_WORD_BITS - n);
 
@@ -43,11 +42,11 @@ static void bint_shift_left_n(t_bint *r, t_word *left, t_word *right, size_t n) 
 	}
 }
 
-t_bint *bint_shift_left(t_bint *integer, int n) {
+t_bint *bint_shift_left(t_bint * integer, int n) {
 	return (bint_shift_left_dst(NULL, integer, n));
 }
 
-t_bint *bint_shift_left_dst(t_bint **dst, t_bint *integer, int n) {
+t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n) {
 
 	//if left shifting negatively, then shift right
 	if (n < 0) {
@@ -61,6 +60,10 @@ t_bint *bint_shift_left_dst(t_bint **dst, t_bint *integer, int n) {
 
 	//if 0, return 0
 	if (bint_is_zero(integer)) {
+		if (dst != NULL && *dst != NULL) {
+			free(*dst);
+			*dst = BINT_ZERO;
+		}
 		return (BINT_ZERO);
 	}
 
@@ -110,6 +113,8 @@ t_bint *bint_shift_left_dst(t_bint **dst, t_bint *integer, int n) {
 	//shift the remaining bits
  	bint_shift_left_n(r, left, right, n);
 
+ 	bint_update_wordset(r);
+
 	return (r);
 }
 
@@ -148,11 +153,12 @@ static void bint_shift_right_n(t_bint *r, t_word *left, t_word *right, size_t n)
 	}
 
 	//call is_zero function : if the shift made the number equals to zero, 'bint_is_zero()' will set it properly to 0
-	bint_is_zero(r);
+	//bint_is_zero(r);
+	//TODO
 }
 
 
-t_bint *bint_shift_right(t_bint *integer, int n) {
+t_bint *bint_shift_right(t_bint * integer, int n) {
 	return (bint_shift_right_dst(NULL, integer, n));
 }
 
@@ -221,6 +227,8 @@ t_bint *bint_shift_right_dst(t_bint **dst, t_bint *integer, int n) {
 
 	//shift the remaining bits
  	bint_shift_right_n(r, left, right, n);
+
+ 	bint_update_wordset(r);
 
 	return (r);
 }

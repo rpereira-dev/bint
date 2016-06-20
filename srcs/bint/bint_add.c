@@ -111,16 +111,19 @@ t_bint *bint_add(t_bint *a, t_bint *b) {
 	return (bint_add_dst(NULL, a, b));
 }
 
-t_bint *bint_add_dst(t_bint **dst, t_bint *a, t_bint *b) {
+t_bint *bint_add_dst(t_bint ** dst, t_bint * a, t_bint * b) {
+	
+	int a_zero = bint_is_zero(a);
+	int b_zero = bint_is_zero(b);
 
 	//if a and b are 0
-	if (bint_is_zero(a) && bint_is_zero(b)) {
+	if (a_zero && b_zero) {
 		//return 0
 		return (BINT_ZERO);
 	}
 
 	//the size to store the result
-	size_t size = a == NULL ? b->size : b == NULL ? a->size : a->size > b->size ? a->size : b->size;
+	size_t size = (a == NULL || a_zero) ? b->size : (b == NULL || b_zero) ? a->size : (a->size > b->size) ? a->size : b->size;
 
 	//ensure that 'dst' bint has the given size
 	t_bint * r = bint_ensure_size(dst, size);
@@ -133,9 +136,9 @@ t_bint *bint_add_dst(t_bint **dst, t_bint *a, t_bint *b) {
 	//do the addition, r has now a correct size to store the result
 
 	//if one is NULL, return a copy of the other
-	if (bint_is_zero(a)) {
+	if (a_zero) {
 		bint_copy(r, b);
-	} else if (bint_is_zero(b)) {
+	} else if (b_zero) {
 		bint_copy(r, a);
 	} else {
 

@@ -45,9 +45,14 @@ t_bint * bint_new(t_word size);
 /** delete the given integer */
 void bint_delete(t_bint ** dst);
 
-/** normalize the given integer so it take the least possible memory space (+ update it constants) */
+/** random bint generator */
+t_bint * bint_random(size_t size);
+t_bint * bint_random_dst(t_bint ** dst, size_t size);
+
+/** normalize the given integer so it take the least possible memory space */
 void bint_normalize_dst(t_bint **dst);
 t_bint * bint_normalize(t_bint * src);
+void bint_update_wordset(t_bint * integer);
 
 /** ensure that the big integer at address 'dst' has the given size, if not, dst is deleted and a new one is allocated */
 t_bint * bint_ensure_size(t_bint ** dst, int size);
