@@ -1,5 +1,6 @@
 #include "bint.h"
 
+/** recalculate the number of words set */
 void bint_update_wordset(t_bint * integer) {
 	if (integer == NULL || integer == BINT_ZERO) {
 		return ;
@@ -13,6 +14,7 @@ void bint_update_wordset(t_bint * integer) {
 	printf("wordset set to: %d\n", integer->wordset);
 }
 
+/** normalize the given integer so it take the least possible memory space */
 void bint_normalize_dst(t_bint ** dst) {
 	if (dst == NULL || *dst == NULL || bint_is_zero(*dst)) {
 		return ;
@@ -29,6 +31,7 @@ void bint_normalize_dst(t_bint ** dst) {
 	(*dst)->size = (*dst)->wordset;
 }
 
+/** normalize the given integer so it take the least possible memory space */
 t_bint * bint_normalize(t_bint * src) {
 
 	if (src == NULL) {

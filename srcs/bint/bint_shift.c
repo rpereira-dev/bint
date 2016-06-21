@@ -106,6 +106,8 @@ t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n) {
 		n = n % BINT_WORD_BITS;
 	}
 
+	printf("%d : %d\n", word_to_shift, n);
+
 	//the begining shift address (most right word)
 	t_word *right = r->words + r->size - 1 - word_to_shift;
 	t_word *left = r->words + r->size - r->wordset;

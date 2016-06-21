@@ -48,7 +48,7 @@ void testAddition(int argc, char **argv) {
 	bint_delete(&b);
 	bint_delete(&r);
 }*/
-/**
+/*
 void testShift(int argc, char **argv) {
 	
 	int value = atoi(argv[1]);
@@ -71,17 +71,15 @@ void testShift(int argc, char **argv) {
 
 	puts("");
 
-	bint_dump(a), puts("");
-	bint_shift_left_dst(&a, a, n);
-	str = bint_to_str(a);
-	bint_dump(a), puts("");
-
-
-	free(str);
+	//bint_dump(a), puts("");
+	//bint_shift_left_dst(&a, a, n);
+	//str = bint_to_str(a);
+	//bint_dump(a), puts("");
+	//free(str);
 
 	bint_delete(&a);
-}
-*/
+}*/
+
 
 void testMult1(int argc, char **argv) {
 	int avalue = atoi(argv[1]);
