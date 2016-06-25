@@ -9,7 +9,6 @@
 static void bint_shift_left_n(t_bint *r, t_word *left, t_word *right, size_t n) {
 
 	//we do the shift right to left to handle overflow
-
 	if (n == 0) {
 		return ;
 	}
@@ -71,10 +70,8 @@ t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n) {
 	size_t word_to_shift = n / BINT_WORD_BITS;
 
 	//size of dst so the result can be stored (left shiting handle overflow)
-	size_t size = (word_to_shift < integer->size - integer->wordset) ? integer->size : (integer->size + word_to_shift + 1);
-
 	//the pointer to store the result
-	t_bint *r = bint_ensure_size(dst, size);
+	t_bint * r = bint_ensure_size(dst, integer->wordset + word_to_shift + 1);
 
 	//if allocation failed...
 	if (r == NULL) {
@@ -106,8 +103,6 @@ t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n) {
 		n = n % BINT_WORD_BITS;
 	}
 
-	printf("%d : %d\n", word_to_shift, n);
-
 	//the begining shift address (most right word)
 	t_word *right = r->words + r->size - 1 - word_to_shift;
 	t_word *left = r->words + r->size - r->wordset;
@@ -124,7 +119,7 @@ t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n) {
 /****************************    RIGHT SHITING    **********************************/
 
 /** right shift n times the given big integer given that 0 <= n <= BINT_WORD_BITS */
-static void bint_shift_right_n(t_bint *r, t_word *left, t_word *right, size_t n) {
+static void bint_shift_right_n(t_bint * r, t_word * left, t_word * right, size_t n) {
 
 	//we do the shift left to right to handle underflow on words
 	if (n == 0) {

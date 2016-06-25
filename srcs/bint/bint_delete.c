@@ -5,5 +5,5 @@ void bint_delete(t_bint **dst) {
 		return ;
 	}
 	free(*dst);
-	*dst = NULL;
+	//*dst = NULL;
 }

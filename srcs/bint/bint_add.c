@@ -77,14 +77,14 @@ static void bint_add_bits_by_bits_dst(t_bint *dst, t_bint *a, t_bint *b) {
 */
 
 /** add the two numbers, assuming they have the same sign and a >= b */
-static void _bint_add_dst_raw(t_bint *dst, t_bint *a, t_bint *b) {
+static void _bint_add_dst_raw(t_bint * dst, t_bint * a, t_bint * b) {
 
-	unsigned int *awords = a->words + a->size;
-	unsigned int *bwords = b->words + b->size;
-	unsigned int *alastword = a->words + a->size - a->wordset;
-	unsigned int *blastword = b->words + b->size - b->wordset;
-	unsigned int *dstwords = dst->words + dst->size;
-	unsigned int reminder = 0;
+	t_word * awords = a->words + a->size;
+	t_word * bwords = b->words + b->size;
+	t_word * alastword = a->words + a->size - a->wordset;
+	t_word * blastword = b->words + b->size - b->wordset;
+	t_word * dstwords = dst->words + dst->size;
+	t_word reminder = 0;
 
 	//add the two integers
 	do {
@@ -112,7 +112,7 @@ t_bint *bint_add(t_bint *a, t_bint *b) {
 }
 
 t_bint *bint_add_dst(t_bint ** dst, t_bint * a, t_bint * b) {
-	
+
 	int a_zero = bint_is_zero(a);
 	int b_zero = bint_is_zero(b);
 
@@ -148,21 +148,23 @@ t_bint *bint_add_dst(t_bint ** dst, t_bint * a, t_bint * b) {
 		//if a == b, then return 2 * a
 		if (cmp == 0) {
 			//dst = a << 1 = 2 * a
-			bint_shift_left_dst(dst, a, 1);
+			bint_shift_left_dst(&r, a, 1);
 		} else {
 
 			//else, if a < b
 			if (cmp < 0) {
 				//swap them, so we always then have a > b
-				t_bint *tmp = a;
+				t_bint * tmp = a;
 				a = b;
 				b = tmp;
 			}
 			
+
 			//' a + (-b) ' becomes ' a - b '
 			//notice that the case '(-a) + b ' becoming ' b - a' is impossible here: a > b
 			if (a->sign == 1 && b->sign == -1) {
 				//TODO : a - abs(b)
+				puts("warning: addition sign issue");
 			} else {
 				//a and b have the same size, and a > b
 				//set the sign
@@ -175,8 +177,11 @@ t_bint *bint_add_dst(t_bint ** dst, t_bint * a, t_bint * b) {
 		}
 	}
 
-	//return the result
+	//normalize the result
+	bint_update_wordset(r);
 	bint_normalize_dst(&r);
+
+	//return it
 	return (r);
 }
 

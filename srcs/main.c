@@ -31,7 +31,7 @@ void testDoubleDabble(int argc, char **argv) {
 	}
 }
 */
-/*
+/**
 void testAddition(int argc, char **argv) {
 	int avalue = atoi(argv[1]);
 	int bvalue = atoi(argv[2]);

@@ -3,7 +3,7 @@
 t_bint *bint_ensure_size(t_bint ** dst, int size) {
 
 	//the return value
-	t_bint *r;
+	t_bint * r;
 
 	//if dst is NULL
 	if (dst == NULL) {
