@@ -31,7 +31,7 @@ void testDoubleDabble(int argc, char **argv) {
 	}
 }
 */
-/**
+
 void testAddition(int argc, char **argv) {
 	int avalue = atoi(argv[1]);
 	int bvalue = atoi(argv[2]);
@@ -47,7 +47,7 @@ void testAddition(int argc, char **argv) {
 	bint_delete(&a);
 	bint_delete(&b);
 	bint_delete(&r);
-}*/
+}
 /*
 void testShift(int argc, char **argv) {
 	

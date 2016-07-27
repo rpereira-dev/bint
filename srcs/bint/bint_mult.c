@@ -55,7 +55,7 @@ t_bint *bint_mult(t_bint *a, t_bint *b) {
 *	repeat recursively on the product y.y' until y' has reached KARATSUBA_THRESHOLD bits
 *
 **/
-# define KARATSUBA_BITS_THRESHOLD (2) //(BINT_WORD_BITS * 1)
+# define KARATSUBA_BITS_THRESHOLD (1) //(BINT_WORD_BITS * 1)
 
 static t_bint *bint_mult_karatsuba_get_y(t_bint *integer, size_t n) {
 
@@ -114,7 +114,6 @@ static void bint_mult_karatsuba(t_bint *r, t_bint * a, t_bint * b) {
 	//printf("y' << n_a : %s\n", bint_to_str(y_b));
 
 	bint_add_dst(&r, two_n, y_a);
-	printf("%s + %s = %s\n", bint_to_str(two_n), bint_to_str(y_a), bint_to_str(r));
 	bint_add_dst(&r, r, y_b);
 	bint_add_dst(&r, r, y_r);
 
@@ -124,7 +123,7 @@ static void bint_mult_karatsuba(t_bint *r, t_bint * a, t_bint * b) {
 	bint_delete(&y_r);
 }
 
-t_bint *bint_mult_dst(t_bint **dst, t_bint *a, t_bint *b) {
+t_bint *bint_mult_dst(t_bint * *dst, t_bint * a, t_bint * b) {
 
 	//if a or b is 0
 	if (bint_is_zero(a) || bint_is_zero(b)) {
@@ -143,6 +142,7 @@ t_bint *bint_mult_dst(t_bint **dst, t_bint *a, t_bint *b) {
 	//calculate sign
 	r->sign = a->sign * b->sign;
 
+	//always have a > b
 	if (bint_cmp(a, b) < 0) {
 		t_bint *tmp = a;
 		a = b;
@@ -153,7 +153,6 @@ t_bint *bint_mult_dst(t_bint **dst, t_bint *a, t_bint *b) {
 	//printf("a: "), bint_dump(a), puts("");
 	//printf("b: "), bint_dump(b), puts("");
 	bint_mult_karatsuba(r, a, b);
-
 
 	//bint_mult_dst_elementary(r, a, b);
 

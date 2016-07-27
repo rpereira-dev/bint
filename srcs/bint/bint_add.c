@@ -77,37 +77,43 @@ static void bint_add_bits_by_bits_dst(t_bint *dst, t_bint *a, t_bint *b) {
 */
 
 /** add the two numbers, assuming they have the same sign and a >= b */
-static void _bint_add_dst_raw(t_bint * dst, t_bint * a, t_bint * b) {
+static void _bint_add_dst_raw(t_bint * r, t_bint * a, t_bint * b) {
 
 	t_word * awords = a->words + a->size;
 	t_word * bwords = b->words + b->size;
 	t_word * alastword = a->words + a->size - a->wordset;
 	t_word * blastword = b->words + b->size - b->wordset;
-	t_word * dstwords = dst->words + dst->size;
+	t_word * rwords = r->words + r->size;
 	t_word reminder = 0;
 
 	//add the two integers
 	do {
-		*(--dstwords) = *(--awords) + *(--bwords) + reminder;
-		reminder = *dstwords < *awords || *dstwords < *bwords;
+		*(--rwords) = *(--awords) + *(--bwords) + reminder;
+		reminder = *rwords < *awords || *rwords < *bwords;
 	} while (bwords >= blastword);
 
-	//add the final reminder to 'dst'
+	//add the final reminder to 'r'
 	if (reminder) {
 		if (awords >= alastword) {
-			*(--dstwords) = *(--awords) + reminder;
+			*(--rwords) = *(--awords) + reminder;
 		} else {
-			*(--dstwords) = reminder;
+			*(--rwords) = reminder;
 		}
 	}
 
 	//finally, add the remaining 'a' to dst
 	while (awords >= alastword) {
-		*(--dstwords) = *(--awords);
+		*(--rwords) = *(--awords);
+	}
+
+	r->wordset = r->words + r->size - rwords - 1;
+
+	if (r->wordset > r->size) {
+		puts("RAW ADDITION: WARNING MEMORY WRITE ERROR");
 	}
 }
 
-t_bint *bint_add(t_bint *a, t_bint *b) {
+t_bint *bint_add(t_bint * a, t_bint * b) {
 	return (bint_add_dst(NULL, a, b));
 }
 
@@ -178,7 +184,6 @@ t_bint *bint_add_dst(t_bint ** dst, t_bint * a, t_bint * b) {
 	}
 
 	//normalize the result
-	bint_update_wordset(r);
 	bint_normalize_dst(&r);
 
 	//return it

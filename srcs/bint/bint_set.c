@@ -1,6 +1,6 @@
 #include "bint.h"
 
-t_bint * bint_set(t_bint **dst, int i) {
+t_bint * bint_set(t_bint ** dst, int i) {
 
 	//ensure dst capacity
 	t_bint * r = bint_ensure_size(dst, bint_get_default_size());
@@ -33,9 +33,8 @@ t_bint * bint_set(t_bint **dst, int i) {
 	return (r);
 }
 
-t_bint * bint_set_pow2(t_bint **dst, size_t i) {
-	int wordbits = sizeof(int) * 8;
-	size_t nwords = i / wordbits + 1;
+t_bint * bint_set_pow2(t_bint ** dst, size_t n) {
+	size_t nwords = n / BINT_WORD_BITS + 1;
 	t_bint * r = bint_ensure_size(dst, nwords);
 	if (r == NULL) {
 		return (NULL);
@@ -45,7 +44,6 @@ t_bint * bint_set_pow2(t_bint **dst, size_t i) {
 	r->wordset = nwords;
 
 	memset(r->words, 0, r->size * sizeof(t_word));
-	i = i % wordbits;
-	*(r->words + r->size - r->wordset) = (1 << i);
+	*(r->words + r->size - r->wordset) = (1 << (n % BINT_WORD_BITS));
 	return (r);
 }
