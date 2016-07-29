@@ -13,3 +13,9 @@ Also, notice that this library can easily be ported for GPU (I'm thinking of CUD
 
 ## About implementation
 If you have any guesses about implementation, I recommend you jumping directly into the code, which I tried to comment at most
+
+
+#TODO:
+- Fix multiplication (which uses Karatsuba algorythm)
+- implementation substraction and division
+- some more binary -> decimal conversion algorythm. I'm currently using double dabble algorythm which scale pretty badly (something between n^2/n^3)
