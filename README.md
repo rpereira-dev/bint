@@ -11,5 +11,5 @@ Ideas of applications are:
 
 Also, notice that this library can easily be ported for GPU (I'm thinking of CUDA particularly). This would allow parallelization which is definetly wanted on some of upper ideas.
 
-## IMPLEMENTATION:
+## About implementation
 If you have any guesses about implementation, I recommend you jumping directly into the code, which I tried to comment at most
