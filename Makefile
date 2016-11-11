@@ -1,10 +1,9 @@
-NAME = ./bin/fractal 
+NAME = ./bin/bint 
 
-SRCS = ./srcs/main.c $(wildcard ./srcs/floatIEE754/*.c) $(wildcard ./srcs/bint/*.c) $(wildcard ./srcs/binary_tools/*.c)
+SRCS = ./srcs/main.c $(wildcard ./srcs/bint/*.c) $(wildcard ./srcs/btools/*.c)
 C_OBJ = $(SRCS:.c=.o)
 LIBDIR = ./lib
-CC = gcc
-FLAGS =
+FLAGS = -Wall -Werror -Wextra
 
 all: $(NAME)
 

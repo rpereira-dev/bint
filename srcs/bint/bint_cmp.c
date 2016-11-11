@@ -1,6 +1,6 @@
 #include "bint.h"
 
-static int bint_cmp_abs_raw(t_bint *a, t_bint *b) {
+static int bint_cmp_abs_raw(t_bint * a, t_bint * b) {
 
 	//if a is zero
 	if (bint_is_zero(a)) {
@@ -26,11 +26,11 @@ static int bint_cmp_abs_raw(t_bint *a, t_bint *b) {
 
 	//else they have the same size
 	//get the biggest word set
-	unsigned int *aword = a->words + a->size - a->wordset;
-	unsigned int *bword = b->words + b->size - b->wordset;
+	t_word * aword = a->words + a->size - a->wordset;
+	t_word * bword = b->words + b->size - b->wordset;
 
 	//the end of the loop, as we know a and b have the same size also
-	unsigned int *aend = a->words + a->size;
+	t_word * aend = a->words + a->size;
 
 	do {
 		if (*aword < *bword) {
@@ -47,11 +47,11 @@ static int bint_cmp_abs_raw(t_bint *a, t_bint *b) {
 
 
 /** compare the two given integers absolutely */
-int bint_cmp_abs(t_bint *a, t_bint *b) {
+int bint_cmp_abs(t_bint * a, t_bint * b) {
 
 	//if a and b are the same pointer (can be both NULL thought)
 	if (a == b) {
-		return (1);
+		return (0);
 	}
 
 	//if a is NULL, then b isnt NULL
@@ -69,11 +69,11 @@ int bint_cmp_abs(t_bint *a, t_bint *b) {
 }
 
 /** compare the two given integers */
-int bint_cmp(t_bint *a, t_bint *b) {
+int bint_cmp(t_bint * a, t_bint * b) {
 	
 	//if a and b are the same pointer (can be both NULL thought)
 	if (a == b) {
-		return (1);
+		return (0);
 	}
 
 	//if a is NULL, then b isnt NULL

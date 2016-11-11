@@ -1,6 +1,6 @@
 #include "bint.h"
 
-void bint_set_bit(t_bint *integer, size_t bit) {
+void bint_set_bit(t_bint * integer, size_t bit) {
 
 	if (integer == NULL) {
 		return ;
@@ -15,7 +15,7 @@ void bint_set_bit(t_bint *integer, size_t bit) {
 	*(integer->words + integer->size - words) |= (1 << bits);
 }
 
-void bint_unset_bit(t_bint *integer, size_t bit) {
+void bint_unset_bit(t_bint * integer, size_t bit) {
 	if (integer == NULL) {
 		return ;
 	}

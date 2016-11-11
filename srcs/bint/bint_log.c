@@ -22,7 +22,7 @@
 **	2) logbase(2) is pre-computed for base in range of [2, 16], help it is computed dynamically using : logbase(2) = ln(2) / ln(base)
 **
 */
-static double _bint_log(t_bint *integer, int base, int bound) {
+static double _bint_log(t_bint * integer, int base, int bound) {
 
 	static double _logtwos[] = {0, 1 / 0.0f, 1, 0.63092975357, 0.5,
 		0.43067655807, 0.38685280723, 0.3562071871, 0.33333333333,
@@ -53,14 +53,14 @@ static double _bint_log(t_bint *integer, int base, int bound) {
 	return (logbtwo * n);
 }
 
-double bint_log_lower(t_bint *integer, int base) {
+double bint_log_lower(t_bint * integer, int base) {
 	return (_bint_log(integer, base, 0));
 }
 
-double bint_log_upper(t_bint *integer, int base) {
+double bint_log_upper(t_bint * integer, int base) {
 	return (_bint_log(integer, base, 1));
 }
 
-double bint_log(t_bint *integer, int base) {
+double bint_log(t_bint * integer, int base) {
 	return (bint_log_lower(integer, base));
 }

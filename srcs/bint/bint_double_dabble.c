@@ -39,19 +39,19 @@ static void bcd_shift_left_once(unsigned char *addr, size_t len) {
 
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wshift-count-overflow"
-
-static void bint_bcd_swap_endian_word64(t_word *words, size_t i) {
+/*
+static void bint_bcd_swap_endian_word64(t_word * words, size_t i) {
 	words[i] = ((words[i] << 8) & 0xFF00FF00FF00FF00ULL ) | ((words[i] >> 8) & 0x00FF00FF00FF00FFULL);
     words[i] = ((words[i] << 16) & 0xFFFF0000FFFF0000ULL ) | ((words[i] >> 16) & 0x0000FFFF0000FFFFULL);
     words[i] = (words[i] << 32) | (words[i] >> 32);
 }
-
-static void bint_bcd_swap_endian_word32(t_word *words, size_t i) {
+*/
+static void bint_bcd_swap_endian_word32(t_word * words, size_t i) {
 	t_word n = words[i];
 	words[i] = ((n >> 24) & 0xff) | ((n << 8) & 0xff0000) | ((n >> 8) & 0xff00) | ((n << 24) & 0xff000000);
 }
 
-static void bint_bcd_swap_endian_word16(t_word *words, size_t i) {
+static void bint_bcd_swap_endian_word16(t_word * words, size_t i) {
 	t_word n = words[i];
 	words[i] = (n >> 8) | (n << 8);
 }
@@ -60,7 +60,7 @@ static void bint_bcd_swap_endian_word16(t_word *words, size_t i) {
 
 /** interpret the given address has an integer 32 bits array, and swap the endian of each integer */
 static void bint_bcd_swap_endian(void *addr, size_t nword) {
-	t_word *words = (t_word*)addr;
+	t_word * words = (t_word*)addr;
 	size_t i;
 	void (*swap_f)();
 
@@ -82,7 +82,7 @@ static void bint_bcd_swap_endian(void *addr, size_t nword) {
 
 
 /** implementation based on this document: http://www.tkt.cs.tut.fi/kurssit/1426/S12/Ex/ex4/Binary2BCD.pdf */
-t_bcd *bint_to_bcd(t_bint *i) {
+t_bcd *bint_to_bcd(t_bint * i) {
 
 	//initialize the bcd
 	t_bcd *bcd = (t_bcd*)malloc(sizeof(t_bcd));
@@ -184,7 +184,7 @@ t_bcd *bint_to_bcd(t_bint *i) {
 		}
 
 		//for each bcd byte column set
-		int i;
+		unsigned int i;
 		for (i = 0; i < bytes_in_column; i++) {
 			//get the byte
 			unsigned char *byteaddr = bcd_str + nbytes_bcd - byteset - 1 - i;
@@ -259,7 +259,7 @@ char *bcd_to_str(t_bcd *bcd) {
 
 	//skip leading zeroes
 	unsigned char *raw_bytes = bcd->raw_bytes;
-	t_word *ptr = (t_word*)raw_bytes;
+	t_word * ptr = (t_word*)raw_bytes;
 	while (*ptr == 0) {
 		++ptr;
 	}

@@ -23,7 +23,7 @@ typedef uint64_t t_dword;
 /** a data structure which represent integer with a custom size */
 /** the 'bits' address contains a raw array of 'int' in the device endianness */
 typedef struct	s_bint {
-	t_word *words; //the raw bits pointer
+	t_word * words; //the raw bits pointer
 	size_t size; //size allocated in word at the address 'words'
 	size_t wordset; //the last non null bits
 	char sign; //the sign
@@ -55,7 +55,7 @@ t_bint * bint_normalize(t_bint * src);
 void bint_update_wordset(t_bint * integer);
 
 /** ensure that the big integer at address 'dst' has the given size, if not, dst is deleted and a new one is allocated */
-t_bint * bint_ensure_size(t_bint ** dst, int size);
+t_bint * bint_ensure_size(t_bint ** dst, size_t size);
 
 /** new */
 void bint_set_default_size(size_t size);

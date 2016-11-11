@@ -1,10 +1,10 @@
 #include "bint.h"
 
-t_bint *bint_negate(t_bint *i) {
+t_bint * bint_negate(t_bint * i) {
 	return (bint_negate_dst(NULL, i));
 }
 
-t_bint *bint_negate_dst(t_bint **dst, t_bint *i) {
+t_bint * bint_negate_dst(t_bint ** dst, t_bint * i) {
 	//if we try to negate 0....
 	if (bint_is_zero(i)) {
 		//if the given destination is non NULL
@@ -27,7 +27,7 @@ t_bint *bint_negate_dst(t_bint **dst, t_bint *i) {
 	//else, i != 0
 	
 	//ensure that the destination where the result is stored has a correct size
-	t_bint *r = bint_ensure_size(dst, i->size);
+	t_bint * r = bint_ensure_size(dst, i->size);
 
 	//if allocation failed, return NULL
 	if (r == NULL) {

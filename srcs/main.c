@@ -1,4 +1,4 @@
-#include "fractal.h"
+#include "bint.h"
 
 /*
 void testDoubleDabble(int argc, char **argv) {
@@ -31,8 +31,12 @@ void testDoubleDabble(int argc, char **argv) {
 	}
 }
 */
-
+/*
 void testAddition(int argc, char **argv) {
+	if (argc <= 2) {
+		fprintf(stderr, "expected 2 integers as arguments");
+		return ;
+	}
 	int avalue = atoi(argv[1]);
 	int bvalue = atoi(argv[2]);
 	t_bint * a = bint_set(NULL, avalue);
@@ -48,6 +52,7 @@ void testAddition(int argc, char **argv) {
 	bint_delete(&b);
 	bint_delete(&r);
 }
+*/
 /*
 void testShift(int argc, char **argv) {
 	
@@ -82,6 +87,12 @@ void testShift(int argc, char **argv) {
 
 
 void testMult1(int argc, char **argv) {
+
+	if (argc <= 2) {
+		fprintf(stderr, "expected 2 integers as arguments");
+		return ;
+	}
+
 	int avalue = atoi(argv[1]);
 	int bvalue = atoi(argv[2]);
 	//t_bint * a = bint_set_pow2(NULL, avalue);
@@ -96,10 +107,17 @@ void testMult1(int argc, char **argv) {
 	char * bstr = bint_to_str(b);
 	char * rstr = bint_to_str(r);
 	printf("%s x %s = %s\n", astr, bstr, rstr);
+	bint_dump(r), puts("");
 }
+
 
 /*
 void testMult2(int argc, char **argv) {
+	if (argc <= 2) {
+		fprintf(stderr, "expected 2 integers as arguments");
+		return ;
+	}
+
 	int asize = atoi(argv[1]);
 	int bsize = atoi(argv[2]);
 
@@ -156,11 +174,16 @@ void testPow2(int argc, char **argv) {
 }
 */
 
-/**
+/*
 void testBigAddition(int argc, char **argv) {
-	
+
+	if (argc <= 2) {
+		fprintf(stderr, "expected 2 integers as arguments");
+		return ;
+	}
+
 	t_bint * n = bint_new(100000);
-	
+
 	bint_set(&n, atoi(argv[1]));
 
 	int end = atoi(argv[2]);
@@ -170,9 +193,8 @@ void testBigAddition(int argc, char **argv) {
 	}
 
 	puts("add ended");
-
-	//printf("%s\n", bint_to_str(n));
-
+	bint_dump(n), puts("");
+	printf("%s\n", bint_to_str(n));
 	bint_delete(&n);
 }
 */

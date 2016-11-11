@@ -1,7 +1,7 @@
 #include "bint.h"
 
 /** clone the given integer */
-t_bint *bint_clone(t_bint *src) {
+t_bint * bint_clone(t_bint * src) {
 
 	/** if zero, return a zero */
 	if (bint_is_zero(src)) {
@@ -9,7 +9,7 @@ t_bint *bint_clone(t_bint *src) {
 	}
 
 	// create a new integer
-	t_bint *dst = bint_new(src->size);
+	t_bint * dst = bint_new(src->size);
 	if (dst == NULL) {
 		return (NULL);
 	}

@@ -1,6 +1,6 @@
 #include "bint.h"
 
-t_bint *bint_ensure_size(t_bint ** dst, int size) {
+t_bint * bint_ensure_size(t_bint ** dst, size_t size) {
 
 	//the return value
 	t_bint * r;

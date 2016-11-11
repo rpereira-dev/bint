@@ -6,7 +6,7 @@
 /****************************    LEFT SHITING    **********************************/
 
 /** left-shift n times the given big integer given that 0 <= n <= BINT_WORD_BITS */
-static void bint_shift_left_n(t_bint *r, t_word *left, t_word *right, size_t n) {
+static void bint_shift_left_n(t_bint * r, t_word * left, t_word * right, size_t n) {
 
 	//we do the shift right to left to handle overflow
 	if (n == 0) {
@@ -41,7 +41,7 @@ static void bint_shift_left_n(t_bint *r, t_word *left, t_word *right, size_t n) 
 	}
 }
 
-t_bint *bint_shift_left(t_bint * integer, int n) {
+t_bint * bint_shift_left(t_bint * integer, int n) {
 	return (bint_shift_left_dst(NULL, integer, n));
 }
 
@@ -85,8 +85,8 @@ t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n) {
 	if (word_to_shift >= 1) {
 
 		//number of word to shift
-		t_word *right = r->words + r->size - 1;
-		t_word *left = r->words + r->size - r->wordset;
+		t_word * right = r->words + r->size - 1;
+		t_word * left = r->words + r->size - r->wordset;
 
 		while (left <= right) {
 			*(left - word_to_shift) = *left;
@@ -104,8 +104,8 @@ t_bint * bint_shift_left_dst(t_bint ** dst, t_bint * integer, int n) {
 	}
 
 	//the begining shift address (most right word)
-	t_word *right = r->words + r->size - 1 - word_to_shift;
-	t_word *left = r->words + r->size - r->wordset;
+	t_word * right = r->words + r->size - 1 - word_to_shift;
+	t_word * left = r->words + r->size - r->wordset;
 
 	//shift the remaining bits
  	bint_shift_left_n(r, left, right, n);
@@ -149,17 +149,18 @@ static void bint_shift_right_n(t_bint * r, t_word * left, t_word * right, size_t
 		++left;
 	}
 
+	(void)r;
 	//call is_zero function : if the shift made the number equals to zero, 'bint_is_zero()' will set it properly to 0
 	//bint_is_zero(r);
 	//TODO
 }
 
 
-t_bint *bint_shift_right(t_bint * integer, int n) {
+t_bint * bint_shift_right(t_bint * integer, int n) {
 	return (bint_shift_right_dst(NULL, integer, n));
 }
 
-t_bint *bint_shift_right_dst(t_bint **dst, t_bint *integer, int n) {
+t_bint * bint_shift_right_dst(t_bint ** dst, t_bint * integer, int n) {
 
 	//if right shifting negatively, then shift left
 	if (n < 0) {
@@ -183,7 +184,7 @@ t_bint *bint_shift_right_dst(t_bint **dst, t_bint *integer, int n) {
 	size_t size = integer->size;
 
 	//the pointer to store the result
-	t_bint *r = bint_ensure_size(dst, size);
+	t_bint * r = bint_ensure_size(dst, size);
 
 	//if allocation failed...
 	if (r == NULL) {
@@ -197,8 +198,8 @@ t_bint *bint_shift_right_dst(t_bint **dst, t_bint *integer, int n) {
 	if (word_to_shift >= 1) {
 
 		//number of word to shift
-		t_word *right = r->words + r->size - 1 - word_to_shift;
-		t_word *left = r->words + r->size - r->wordset;
+		t_word * right = r->words + r->size - 1 - word_to_shift;
+		t_word * left = r->words + r->size - r->wordset;
 
 		while (right >= left) {
 			*(right + word_to_shift) = *right;
@@ -209,9 +210,10 @@ t_bint *bint_shift_right_dst(t_bint **dst, t_bint *integer, int n) {
 		memset(left, 0, word_to_shift * sizeof(t_word));
 
 		//decrease number of wordset (most left words were unset by the shiting)
-		r->wordset -= word_to_shift;
-		if (r->wordset < 0) {
+		if ((r->wordset - word_to_shift) > r->wordset) {
 			r->wordset = 0;
+		} else {
+			r->wordset -= word_to_shift;
 		}
 
 		//calculate the remaining bits to shift
@@ -219,8 +221,8 @@ t_bint *bint_shift_right_dst(t_bint **dst, t_bint *integer, int n) {
 	}
 
 	//the begining shift address (most right word)
-	t_word *right = r->words + r->size - 1;
-	t_word *left = r->words + r->size - r->wordset;
+	t_word * right = r->words + r->size - 1;
+	t_word * left = r->words + r->size - r->wordset;
 
 	//shift the remaining bits
  	bint_shift_right_n(r, left, right, n);

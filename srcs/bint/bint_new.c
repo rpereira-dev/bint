@@ -1,6 +1,6 @@
 #include "bint.h"
 
-t_bint *bint_new(unsigned int size) {
+t_bint * bint_new(unsigned int size) {
 
 	//so the size is > 0 and multiple of sizeof(int)
 	if (size == 0) {
@@ -10,7 +10,7 @@ t_bint *bint_new(unsigned int size) {
 	size_t words_size = size * sizeof(t_word);
 
 	//allocate memory space
-	t_bint *i = (t_bint*)malloc(sizeof(t_bint) + words_size);
+	t_bint * i = (t_bint*)malloc(sizeof(t_bint) + words_size);
 	if (i == NULL) {
 		return (NULL);
 	}
